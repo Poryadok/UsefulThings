@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UIBinding.Base;
+using TMPro;
 
 namespace UIBinding.Components
 {
-	[RequireComponent(typeof(Dropdown))]
+	[RequireComponent(typeof(TMP_Dropdown))]
 	public class DropdownBinding : BaseBinding<IntProperty>
 	{
 		[SerializeField]
 		private bool m_changePropertyValue = true;
 
-		private Dropdown m_component;
+		private TMP_Dropdown m_component;
 
 		private void Awake()
 		{
-			m_component = GetComponent<Dropdown>();
+			m_component = GetComponent<TMP_Dropdown>();
 			m_component.onValueChanged.AddListener(ValueChangeHandler);
 		}
 
