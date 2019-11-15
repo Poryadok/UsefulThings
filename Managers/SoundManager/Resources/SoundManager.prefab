@@ -56,8 +56,11 @@ MonoBehaviour:
   _musicVolume: 1
   _voiceVolume: 1
   _sfxVolume: 1
-  MenuMusic: []
-  GameplayMusic: []
+  MenuMusic:
+  - {fileID: 8300000, guid: a60f5c5482e3d9f4d97f4eacd357bc4d, type: 3}
+  GameplayMusic:
+  - {fileID: 8300000, guid: fbc0d73715a38f144bad683ba49b799c, type: 3}
+  - {fileID: 8300000, guid: 3486034385c9aeb448a19a290185ef06, type: 3}
   GameOverVoice: {fileID: 0}
   Blasters: []
 --- !u!82 &82167797074185256

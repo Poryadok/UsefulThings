@@ -10,7 +10,7 @@ namespace PM.UsefulThings
 	public class LocalizationManager : Singleton<LocalizationManager>
 	{
 		private const string CurrentLanguageKey = "current_language";
-		private const SystemLanguage DefaultLanguage = SystemLanguage.English;
+		private const SystemLanguage DefaultLanguage = SystemLanguage.Russian;
 
 		public static event System.Action OnLocaleChanged;
 
@@ -18,7 +18,7 @@ namespace PM.UsefulThings
 
 		public List<SystemLanguage> AvailableLanguages = new List<SystemLanguage>()
 		{
-			SystemLanguage.English,
+			//SystemLanguage.English,
 			SystemLanguage.Russian
 		};
 
@@ -32,7 +32,7 @@ namespace PM.UsefulThings
 			}
 			else
 			{
-				CurrentLanguage = Application.systemLanguage;
+				CurrentLanguage = SystemLanguage.Russian; //Application.systemLanguage;
 			}
 			InitCurrentLanguage();
 		}
