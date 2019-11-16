@@ -70,7 +70,7 @@ namespace PM.UsefulThings
                 return;
 
             IsReady = false;
-            Sample.StartCoroutine(SpawnReserve(quantity));
+			CoroutineManagerUT.Instance.StartCoroutine(SpawnReserve(quantity));
         }
 
         private IEnumerator SpawnReserve(int quantity)

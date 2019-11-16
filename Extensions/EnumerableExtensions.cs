@@ -118,5 +118,17 @@ namespace PM.UsefulThings.Extensions
 		{
 			return new List<T>(collection);
 		}
+
+		public static List<R> Cast<T, R>(this IEnumerable<T> collection) where T : R
+		{
+			var result = new List<R>();
+
+			foreach (var item in collection)
+			{
+				result.Add(item);
+			}
+
+			return result;
+		}
 	}
 }

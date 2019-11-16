@@ -9,6 +9,8 @@ namespace PM.UsefulThings
 		public Transform MainRootPrefab;
 		public Transform AuxiliaryRootPrefab;
 
+		public Canvas RaycastCanvas { get; private set; }
+
 		[SerializeField]
 		protected Transform mainRoot;
 		[SerializeField]
@@ -33,6 +35,8 @@ namespace PM.UsefulThings
 
 			DontDestroyOnLoad(mainRoot);
 			DontDestroyOnLoad(auxiliaryRoot);
+
+			RaycastCanvas = mainRoot.GetComponent<Canvas>();
 
 #if UNITY_EDITOR
 			var childCount = mainRoot.transform.childCount;
