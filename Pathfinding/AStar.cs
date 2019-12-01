@@ -1,5 +1,4 @@
 ﻿using PM.UsefulThings.Collections;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,7 +41,13 @@ namespace PM.UsefulThings.Pathfinding
 				for (int i = 0; i < neighbours.Count; i++)
 				{
 					next = neighbours[i];
-					newCost = costSoFar[current] + (next == finish || next.IsWalkable ? 1 : 10000);
+
+					if (!next.IsWalkable && next != finish)
+					{
+						continue;
+					}
+
+					newCost = costSoFar[current] + 1;
 
 					if (!costSoFar.ContainsKey(next) || newCost < costSoFar[next])
 					{
@@ -88,11 +93,17 @@ namespace PM.UsefulThings.Pathfinding
 
 			return path;
 		}
+
+
+		public static bool HasPath(IPathNode start, IPathNode finish)
+		{
+			return FindPath(start, finish).Count > 0;
+		}
 	}
 
 	public interface IPathNode : IGenericPriorityQueueNode<int>
 	{
-		Vector3Int FieldPosition { get; }
+		Vector2Int FieldPosition { get; }
 		bool IsWalkable { get; }
 
 		List<IPathNode> GetNeighbours();

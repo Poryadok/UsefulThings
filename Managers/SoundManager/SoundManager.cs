@@ -1,11 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using PM.UsefulThings.Extensions;
 using System.Collections.Generic;
 using System.Linq;
-using System;
-using PM.UsefulThings;
+using UnityEngine;
 using UnityEngine.Audio;
-using PM.UsefulThings.Extensions;
 
 namespace PM.UsefulThings
 {
@@ -40,7 +37,9 @@ namespace PM.UsefulThings
 		[Space]
 		public AudioClip GameOverVoice;
 		[Space]
-		public AudioClip[] Blasters;
+		public AudioClip StartMelody;
+		[Space]
+		public AudioClip SuccessSfx;
 
 
 		public float MasterVolume
@@ -151,9 +150,15 @@ namespace PM.UsefulThings
 				{
 					//you should stop
 					if (SingleSfxSource.isPlaying)
+					{
 						SingleSfxSource.Stop();
+					}
+
 					if (LoopSfxSource.isPlaying)
+					{
 						LoopSfxSource.Stop();
+					}
+
 					foreach (var source in BackupSources)
 					{
 						source.Stop();
@@ -195,13 +200,21 @@ namespace PM.UsefulThings
 
 				//if set "on", you don't need to play sfx again
 				if (value)
+				{
 					return;
+				}
 
 				//else you should stop
 				if (SingleSfxSource.isPlaying)
+				{
 					SingleSfxSource.Stop();
+				}
+
 				if (LoopSfxSource.isPlaying)
+				{
 					LoopSfxSource.Stop();
+				}
+
 				foreach (var source in BackupSources)
 				{
 					source.Stop();
@@ -318,7 +331,9 @@ namespace PM.UsefulThings
 			sources.Add(SingleSfxSource);
 			sources.Add(LoopSfxSource);
 			if (sources.Count != 4)
+			{
 				Debug.LogError("You put 1 source to 2 positions!");
+			}
 
 			UpdateVolume();
 		}
@@ -394,7 +409,9 @@ namespace PM.UsefulThings
 		public KeyValuePair<AudioSource, int> PlaySfx(AudioClip[] clip, float volume = 1, float pitch = 1, bool isPlayInLoop = false, bool isParallel = false)
 		{
 			if (clip.Length == 0)
+			{
 				throw new System.Exception("Missing SFX");
+			}
 
 			var randomClip = clip[UnityEngine.Random.Range(0, clip.Length)];
 
@@ -412,10 +429,14 @@ namespace PM.UsefulThings
 		public KeyValuePair<AudioSource, int> PlaySfx(AudioClip clip, float volume = 1, float pitch = 1, bool isPlayInLoop = false, bool isParallel = false)
 		{
 			if (!IsSfxOn)
+			{
 				return new KeyValuePair<AudioSource, int>(null, 0);
+			}
 
 			if (clip == null)
+			{
 				return new KeyValuePair<AudioSource, int>(null, 0);
+			}
 
 			if (isParallel)
 			{
@@ -467,9 +488,13 @@ namespace PM.UsefulThings
 			else
 			{
 				if (isPlayInLoop)
+				{
 					return PlayClip(LoopSfxSource, clip, isPlayInLoop, pitch, volume);
+				}
 				else
+				{
 					return PlayClip(SingleSfxSource, clip, isPlayInLoop, pitch, volume);
+				}
 			}
 		}
 
@@ -484,10 +509,14 @@ namespace PM.UsefulThings
 		private void PlaySingleSfx(AudioSource source, AudioClip clip, bool isPlayInLoop = false, float pitch = 1, float volume = 1)
 		{
 			if (!IsSfxOn)
+			{
 				return;
+			}
 
 			if (clip == null)
+			{
 				return;
+			}
 
 			source.volume = volume;
 			source.loop = isPlayInLoop;
@@ -507,7 +536,7 @@ namespace PM.UsefulThings
 		/// <param name="_isMusicShuffle"></param>
 		public void PlayMusic(AudioClip[] clips, bool _isMusicShuffle = false)
 		{
-			if (clips.Length == 0)
+			if (clips.Length == 0 || this.musicCollection == clips)
 			{
 				return;
 			}
@@ -517,12 +546,18 @@ namespace PM.UsefulThings
 
 			//set, but not play if you shouldn't
 			if (!IsMusicOn)
+			{
 				return;
+			}
 
 			if (this.isMusicShuffle)
+			{
 				PlayClip(MusicSource, musicCollection[UnityEngine.Random.Range(0, musicCollection.Length)], volume: MusicSource.volume);
+			}
 			else
+			{
 				PlayClip(MusicSource, musicCollection[0], volume: MusicSource.volume);
+			}
 		}
 
 		/// <summary>
@@ -534,7 +569,9 @@ namespace PM.UsefulThings
 		{
 			//do not play if you shouldn't
 			if (!IsVoiceOn)
+			{
 				return;
+			}
 
 			PlayClip(VoiceSource, clip, false, pitch, MasterVolume * VoiceVolume * volume);
 		}
@@ -562,21 +599,29 @@ namespace PM.UsefulThings
 		public bool IsSfxPlaying(AudioClip clip)
 		{
 			if (SingleSfxSource.isPlaying && SingleSfxSource.clip == clip)
+			{
 				return true;
+			}
 
 			if (LoopSfxSource.isPlaying && LoopSfxSource.clip == clip)
+			{
 				return true;
+			}
 
 			foreach (var source in BackupSources)
 			{
 				if (source.isPlaying && source.clip == clip)
+				{
 					return true;
+				}
 			}
 
 			foreach (var source in BackupLoopSources)
 			{
 				if (source.isPlaying && source.clip == clip)
+				{
 					return true;
+				}
 			}
 
 			return false;
@@ -585,7 +630,9 @@ namespace PM.UsefulThings
 		public bool IsVoicePlaying(AudioClip clip)
 		{
 			if (VoiceSource.isPlaying && VoiceSource.clip == clip)
+			{
 				return true;
+			}
 
 			return false;
 		}
@@ -603,10 +650,14 @@ namespace PM.UsefulThings
 		public bool IsMusicCollectionIsPlaying(AudioClip[] clips)
 		{
 			if (musicCollection == clips)
+			{
 				return true;
+			}
 
 			if (musicCollection.Length != clips.Length)
+			{
 				return false;
+			}
 
 			int match = 0;
 			foreach (var clip in clips)
@@ -626,27 +677,39 @@ namespace PM.UsefulThings
 		public void StopClip(AudioClip clip)
 		{
 			if (MusicSource.isPlaying && MusicSource.clip == clip)
+			{
 				MusicSource.Stop();
+			}
 
 			if (VoiceSource.isPlaying && VoiceSource.clip == clip)
+			{
 				VoiceSource.Stop();
+			}
 
 			if (SingleSfxSource.isPlaying && SingleSfxSource.clip == clip)
+			{
 				SingleSfxSource.Stop();
+			}
 
 			if (LoopSfxSource.isPlaying && LoopSfxSource.clip == clip)
+			{
 				LoopSfxSource.Stop();
+			}
 
 			foreach (var source in BackupSources)
 			{
 				if (source.isPlaying && source.clip == clip)
+				{
 					source.Stop();
+				}
 			}
 
 			foreach (var source in BackupLoopSources)
 			{
 				if (source.isPlaying && source.clip == clip)
+				{
 					source.Stop();
+				}
 			}
 		}
 
@@ -676,7 +739,9 @@ namespace PM.UsefulThings
 		{
 			//key can't be null
 			if (key == null)
+			{
 				return;
+			}
 
 			if (notebook.ContainsKey(key))
 			{
