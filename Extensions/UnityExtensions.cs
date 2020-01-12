@@ -463,6 +463,25 @@ namespace PM.UsefulThings.Extensions
 				return default(T);
 		}
 
+		public static T RandomKey<T,U>(this Dictionary<T,U> obj)
+		{
+			var c = obj.Count;
+			if (c == 0)
+				return default(T);
+
+			var target = UnityEngine.Random.Range(0, c);
+			var current = 0;
+			foreach (var key in obj.Keys)
+			{
+				if (current == target)
+				{
+					return key;
+				}
+				current++;
+			}
+			return default(T);
+		}
+
 		public static T RandomItem<T>(this FastList<T> obj)
 		{
 			var c = obj.size;

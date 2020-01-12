@@ -45,14 +45,26 @@ namespace PM.UsefulThings
 				var textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>($"{path}/{fileName}.{extension}");
 				if (textAsset == null)
 				{
-					textAsset = new TextAsset(data);
-					AssetDatabase.CreateAsset(textAsset, $"{path}/{fileName}.{extension}");
+					var dir = Application.dataPath + "/CurrentProject/Resources";
+					if (path != null)
+					{
+						dir += $"/{path}";
+					}
+					if (!Directory.Exists(dir))
+					{
+						Directory.CreateDirectory(dir);
+					}
+
+					System.IO.File.WriteAllText($"{dir}/{fileName}.txt", data);
 				}
 				else
 				{
 					File.WriteAllText(AssetDatabase.GetAssetPath(textAsset), data);
 				}
-				EditorUtility.SetDirty(textAsset);
+				if (textAsset != null)
+				{
+					EditorUtility.SetDirty(textAsset);
+				}
 				AssetDatabase.SaveAssets();
 
 				retValue = true;

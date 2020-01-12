@@ -39,10 +39,10 @@ namespace PM.UsefulThings
 		{
 			Locale.Clear();
 
-			var localization = (TextAsset)Resources.Load("Localizations/" + CurrentLanguage.ToString(), typeof(TextAsset));
+			var localization = Resources.Load<TextAsset>("Localizations/" + CurrentLanguage.ToString());
 			if (localization == null)
 			{
-				localization = (TextAsset)Resources.Load("Localizations/" + DefaultLanguage.ToString(), typeof(TextAsset));
+				localization = Resources.Load<TextAsset>("Localizations/" + DefaultLanguage.ToString());
 			}
 
 			if (localization == null)
