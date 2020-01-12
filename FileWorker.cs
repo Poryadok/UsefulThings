@@ -90,7 +90,7 @@ namespace PM.UsefulThings
 				{
 					dir += $"/{path}";
 				}
-				if (Directory.Exists(dir))
+				if (Directory.Exists($"{dir}/{fileName}.txt"))
 				{
 					result = File.ReadAllText($"{dir}/{fileName}.txt");
 					retValue = true;
