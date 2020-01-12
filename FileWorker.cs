@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 namespace PM.UsefulThings
@@ -25,7 +26,37 @@ namespace PM.UsefulThings
 
 				System.IO.File.WriteAllText($"{dir}/{fileName}.txt", data);
 				retValue = true;
-				Debug.Log($"Saved data to file {dir}");
+				Debug.Log($"Saved data to file {dir}/{fileName}.txt");
+			}
+			catch (System.Exception ex)
+			{
+				string ErrorMessages = "File Write Error\n" + ex.Message;
+				retValue = false;
+				Debug.LogError(ErrorMessages);
+			}
+			return retValue;
+		}
+
+		public static bool WriteProjectFile(string data, string fileName, string extension = "txt", string path = null)
+		{
+			bool retValue = false;
+			try
+			{
+				var textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>($"{path}/{fileName}.{extension}");
+				if (textAsset == null)
+				{
+					textAsset = new TextAsset(data);
+					AssetDatabase.CreateAsset(textAsset, $"{path}/{fileName}.{extension}");
+				}
+				else
+				{
+					File.WriteAllText(AssetDatabase.GetAssetPath(textAsset), data);
+				}
+				EditorUtility.SetDirty(textAsset);
+				AssetDatabase.SaveAssets();
+
+				retValue = true;
+				Debug.Log($"Saved data to file {path}/{fileName}.{extension}");
 			}
 			catch (System.Exception ex)
 			{

@@ -16,6 +16,9 @@ namespace PM.UsefulThings.Editor
 			{
 				trgt.FindWindows();
 			}
+
+			EditorUtility.SetDirty(trgt);
+			AssetDatabase.SaveAssets();
 		}
 
 	}
