@@ -203,7 +203,7 @@ namespace PM.UsefulThings.Extensions
 			return accum;
 		}
 
-		public static bool HasAny<T>(this ICollection<T> collection, Func<T, bool> func)
+		public static bool HasAny<T>(this IEnumerable<T> collection, Func<T, bool> func)
 		{
 			if (func == null)
 				throw new ArgumentNullException("func");

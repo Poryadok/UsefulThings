@@ -17,6 +17,7 @@ namespace PM.UsefulThings
 			public string Id;
 		}
 
+		public string Link;
 		[SerializeField]
 		public LocaleIdPair[] Locales;
 	}
