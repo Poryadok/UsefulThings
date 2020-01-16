@@ -12,7 +12,7 @@ namespace PM.UsefulThings.Extensions
 			return (collection == null) || (collection.Count == 0);
 		}
 
-		public static bool Find<T, V>(this Dictionary<T, V> collection, Predicate<V> predicate, out KeyValuePair<T, V> result) where V : class
+		public static bool TryFind<T, V>(this Dictionary<T, V> collection, Predicate<V> predicate, out KeyValuePair<T, V> result) where V : class
 		{
 			if (collection.IsEmpty())
 			{

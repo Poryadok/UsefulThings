@@ -159,7 +159,7 @@ namespace PM.UsefulThings
 		{
 			KeyValuePair<Vector3Int, T> result;
 
-			if (cells.Find(x => x == cell, out result))
+			if (cells.TryFind(x => x == cell, out result))
 			{
 				cells.Remove(result.Key);
 			}

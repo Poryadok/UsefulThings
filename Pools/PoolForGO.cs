@@ -19,9 +19,11 @@ namespace PM.UsefulThings
         protected Stack<GameObject> Stack = new Stack<GameObject>();
         protected GameObject Sample { get; set; }
 
-        public PoolForGO()
+        public PoolForGO(GameObject sample = null)
         {
-            if (Sample == null)
+			this.Sample = sample;
+
+			if (Sample == null)
                 Sample = new GameObject();
             if (Parent == null)
                 Parent = (new GameObject()).transform;
