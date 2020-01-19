@@ -81,7 +81,7 @@ namespace PM.UsefulThings
 		/// If we will need to override Awake we must be sure it won't do anything
 		/// if it isn't an instance. 
 		/// </summary>
-		virtual protected void Awake()
+		protected virtual void Awake()
 		{
 			if (_instance == null)
 			{

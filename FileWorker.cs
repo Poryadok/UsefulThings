@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace PM.UsefulThings
 {
@@ -37,6 +39,7 @@ namespace PM.UsefulThings
 			return retValue;
 		}
 
+#if UNITY_EDITOR
 		public static bool WriteProjectFile(string data, string fileName, string extension = "txt", string path = null)
 		{
 			bool retValue = false;
@@ -78,6 +81,7 @@ namespace PM.UsefulThings
 			}
 			return retValue;
 		}
+#endif
 
 		public static bool ReadFile(string fileName, out string result, string path = null)
 		{
