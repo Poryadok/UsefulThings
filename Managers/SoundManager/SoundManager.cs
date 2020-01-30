@@ -526,6 +526,11 @@ namespace PM.UsefulThings
 
 		public void PlayMusic(AudioClip clip)
 		{
+			if (clip == null)
+			{
+				Debug.LogError("Clip is null");
+				return;
+			}
 			PlayMusic((new AudioClip[] { clip }));
 		}
 
@@ -538,6 +543,12 @@ namespace PM.UsefulThings
 		{
 			if (clips.Length == 0 || this.musicCollection == clips)
 			{
+				return;
+			}
+
+			if (clips.HasAny(x => x == null))
+			{
+				Debug.LogError("Some clips are null");
 				return;
 			}
 
