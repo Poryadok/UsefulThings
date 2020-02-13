@@ -28,7 +28,7 @@ namespace PM.UsefulThings
 		private new Camera camera;
 		private Vector3 zoomOffset;
 
-		private void Awake		()
+		private void Awake()
 		{
 			camera = this.GetComponent<Camera>();
 		}
@@ -41,8 +41,8 @@ namespace PM.UsefulThings
 			}
 
 			CalculateBounds();
-			Zoom();
-			Move();
+			//Zoom();
+			//Move();
 		}
 
 		private void CalculateBounds()
