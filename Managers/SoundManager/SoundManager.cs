@@ -31,17 +31,6 @@ namespace PM.UsefulThings
 		public float _sfxVolume = 1;
 
 
-		[Space]
-		public AudioClip[] MenuMusic;
-		public AudioClip[] GameplayMusic;
-		[Space]
-		public AudioClip GameOverVoice;
-		[Space]
-		public AudioClip StartMelody;
-		[Space]
-		public AudioClip SuccessSfx;
-
-
 		public float MasterVolume
 		{
 			get
