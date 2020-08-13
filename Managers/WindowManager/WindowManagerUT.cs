@@ -340,5 +340,10 @@ namespace PM.UsefulThings
 					throw new System.Exception("Non registered mode!");
 			}
 		}
+
+		public T GetWindow<T>() where T : class, IWindowUT
+		{
+			return allWindows.Find(x => x is T) as T;
+		}
 	}
 }

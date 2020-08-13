@@ -1,20 +1,21 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UIBinding.Base;
+using TMPro;
 
 namespace UIBinding.Components
 {
-	[RequireComponent(typeof(InputField))]
+	[RequireComponent(typeof(TMP_InputField))]
 	public class InputFieldBinding : BaseBinding<StringProperty>
 	{
 		[SerializeField]
 		private bool m_changePropertyValue = true;
 
-		private InputField m_component;
+		private TMP_InputField m_component;
 
 		private void Awake()
 		{
-			m_component = GetComponent<InputField>();
+			m_component = GetComponent<TMP_InputField>();
 			m_component.onValueChanged.AddListener(ValueChangeHandler);
 		}
 

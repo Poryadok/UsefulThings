@@ -48,6 +48,11 @@ namespace UIBinding.Base
 				var fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
 				foreach (var fieldInfo in fieldInfos)
 				{
+					if (fieldInfo.GetCustomAttribute<IgnoreBinding>() != null)
+					{
+						continue;
+					}
+
 					var fieldType = fieldInfo.FieldType;
 					if ((fieldType.GetInterface(interfaceName) != null) && !m_bindingFieldInfos.Contains(fieldInfo))
 					{

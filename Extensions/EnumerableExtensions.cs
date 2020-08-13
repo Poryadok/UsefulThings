@@ -12,6 +12,201 @@ namespace PM.UsefulThings.Extensions
 			return (collection == null) || (collection.Count == 0);
 		}
 
+		public static bool IsEmpty<T>(this ICollection<T> collection)
+		{
+			return (collection == null) || (collection.Count == 0);
+		}
+
+		public static int CountSelect<T>(this ICollection<T> collection, Predicate<T> predicate)
+		{
+			if (collection.IsEmpty())
+			{
+				return 0;
+			}
+
+			var value = 0;
+
+			foreach (var item in collection)
+			{
+				if (predicate(item))
+				{
+					value++;
+				}
+			}
+
+			return value;
+		}
+
+		public static T FindWithCast<T>(this ICollection collection, Predicate<T> predicate) where T : class
+		{
+			if (collection.IsEmpty())
+			{
+				return default(T);
+			}
+
+			foreach (var item in collection)
+			{
+				if (item is T u && predicate(u))
+				{
+					return u;
+				}
+			}
+			return default(T);
+		}
+
+		public static T FindSmallest<T>(this ICollection<T> collection, Predicate<T> predicate, Func<T, int> evaluator)
+		{
+			if (collection.IsEmpty())
+			{
+				return default(T);
+			}
+
+			bool hasResult = false;
+			var value = int.MaxValue;
+			T result = default(T);
+
+			foreach (var item in collection)
+			{
+				if (predicate(item))
+				{
+					if (hasResult)
+					{
+						if (evaluator(item) < value)
+						{
+							result = item;
+							value = evaluator(item);
+						}
+					}
+					else
+					{
+						value = evaluator(item);
+						result = item;
+						hasResult = true;
+					}
+				}
+			}
+			return result;
+		}
+
+		public static KeyValuePair<T, U> Find<T, U>(this IDictionary<T, U> collection, Predicate<KeyValuePair<T, U>> predicate)
+		{
+			if (collection.IsEmpty())
+			{
+				return default(KeyValuePair<T, U>);
+			}
+
+			foreach (var item in collection)
+			{
+				if (predicate(item))
+				{
+					return item;
+				}
+			}
+			return default(KeyValuePair<T, U>);
+		}
+
+		public static T FindSmallest<T>(this ICollection<T> collection, Predicate<T> predicate, Func<T, float> evaluator)
+		{
+			if (collection.IsEmpty())
+			{
+				return default(T);
+			}
+
+			bool hasResult = false;
+			var value = float.MaxValue;
+			T result = default(T);
+
+			foreach (var item in collection)
+			{
+				if (predicate(item))
+				{
+					if (hasResult)
+					{
+						if (evaluator(item) < value)
+						{
+							result = item;
+							value = evaluator(item);
+						}
+					}
+					else
+					{
+						value = evaluator(item);
+						result = item;
+						hasResult = true;
+					}
+				}
+			}
+			return result;
+		}
+
+		public static T FindBiggest<T>(this ICollection<T> collection, Predicate<T> predicate, Func<T, int> evaluator)
+		{
+			if (collection.IsEmpty())
+			{
+				return default(T);
+			}
+
+			bool hasResult = false;
+			var value = int.MinValue;
+			T result = default(T);
+
+			foreach (var item in collection)
+			{
+				if (predicate(item))
+				{
+					if (hasResult)
+					{
+						if (evaluator(item) > value)
+						{
+							value = evaluator(item);
+							result = item;
+						}
+					}
+					else
+					{
+						value = evaluator(item);
+						result = item;
+						hasResult = true;
+					}
+				}
+			}
+			return result;
+		}
+
+		public static T FindBiggest<T>(this ICollection<T> collection, Predicate<T> predicate, Func<T, float> evaluator)
+		{
+			if (collection.IsEmpty())
+			{
+				return default(T);
+			}
+
+			bool hasResult = false;
+			var value = float.MinValue;
+			T result = default(T);
+
+			foreach (var item in collection)
+			{
+				if (predicate(item))
+				{
+					if (hasResult)
+					{
+						if (evaluator(item) > value)
+						{
+							value = evaluator(item);
+							result = item;
+						}
+					}
+					else
+					{
+						value = evaluator(item);
+						result = item;
+						hasResult = true;
+					}
+				}
+			}
+			return result;
+		}
+
 		public static bool TryFind<T, V>(this Dictionary<T, V> collection, Predicate<V> predicate, out KeyValuePair<T, V> result) where V : class
 		{
 			if (collection.IsEmpty())
