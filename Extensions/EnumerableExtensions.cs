@@ -17,6 +17,40 @@ namespace PM.UsefulThings.Extensions
 			return (collection == null) || (collection.Count == 0);
 		}
 
+		public static bool AddNoDoubling<T>(this ICollection<T> collection, T item)
+		{
+			if (collection == null)
+			{
+				return false;
+			}
+
+			if (collection.Contains(item))
+			{
+				return false;
+			}
+
+			collection.Add(item);
+			return true;
+		}
+
+		public static void AddRangeNoDoubling<T>(this ICollection<T> collection, ICollection<T> range)
+		{
+			if (collection == null || range == null || range.Count == 0)
+			{
+				return;
+			}
+
+			foreach (var item in range)
+			{
+				if (collection.Contains(item))
+				{
+					continue;
+				}
+
+				collection.Add(item);
+			}
+		}
+
 		public static int CountSelect<T>(this ICollection<T> collection, Predicate<T> predicate)
 		{
 			if (collection.IsEmpty())
@@ -251,9 +285,9 @@ namespace PM.UsefulThings.Extensions
 			collection[b] = tmp;
 		}
 
-		public static void Sort<T>(this IList<T> collection, Func<T, int> compareFunc, int firstIndex = 0, int lastIndex = -1)
+		public static void Sort<T>(this IList<T> collection, Func<T, int> compareFunc, int firstIndex = 0, int lastIndex = int.MinValue)
 		{
-			if (lastIndex < 0)
+			if (lastIndex == int.MinValue)
 			{
 				lastIndex = collection.Count - 1;
 			}
@@ -268,7 +302,7 @@ namespace PM.UsefulThings.Extensions
 
 			for (int i = firstIndex + 1; i <= lastIndex; ++i)
 			{
-				if (compareFunc((T)collection[i]) <= compareFunc((T)collection[firstIndex]))
+				if (compareFunc((T)collection[i]) < compareFunc((T)collection[firstIndex]))
 				{
 					collection.Swap(++currentIndex, i);
 				}
@@ -280,9 +314,9 @@ namespace PM.UsefulThings.Extensions
 			Sort(collection, compareFunc, currentIndex + 1, lastIndex);
 		}
 
-		public static void SortByDescending<T>(this IList<T> collection, Func<T, int> compareFunc, int firstIndex = 0, int lastIndex = -1)
+		public static void Sort<T>(this IList<T> collection, Func<T, float> compareFunc, int firstIndex = 0, int lastIndex = int.MinValue)
 		{
-			if (lastIndex < 0)
+			if (lastIndex == int.MinValue)
 			{
 				lastIndex = collection.Count - 1;
 			}
@@ -297,7 +331,65 @@ namespace PM.UsefulThings.Extensions
 
 			for (int i = firstIndex + 1; i <= lastIndex; ++i)
 			{
-				if (compareFunc((T)collection[i]) >= compareFunc((T)collection[firstIndex]))
+				if (compareFunc((T)collection[i]) < compareFunc((T)collection[firstIndex]))
+				{
+					collection.Swap(++currentIndex, i);
+				}
+			}
+
+			collection.Swap(firstIndex, currentIndex);
+
+			Sort(collection, compareFunc, firstIndex, currentIndex - 1);
+			Sort(collection, compareFunc, currentIndex + 1, lastIndex);
+		}
+
+		public static void SortByDescending<T>(this IList<T> collection, Func<T, int> compareFunc, int firstIndex = 0, int lastIndex = int.MinValue)
+		{
+			if (lastIndex == int.MinValue)
+			{
+				lastIndex = collection.Count - 1;
+			}
+			if (firstIndex >= lastIndex)
+			{
+				return;
+			}
+
+			int middleIndex = (lastIndex - firstIndex) / 2 + firstIndex, currentIndex = firstIndex;
+
+			collection.Swap(firstIndex, middleIndex);
+
+			for (int i = firstIndex + 1; i <= lastIndex; ++i)
+			{
+				if (compareFunc((T)collection[i]) > compareFunc((T)collection[firstIndex]))
+				{
+					collection.Swap(++currentIndex, i);
+				}
+			}
+
+			collection.Swap(firstIndex, currentIndex);
+
+			SortByDescending(collection, compareFunc, firstIndex, currentIndex - 1);
+			SortByDescending(collection, compareFunc, currentIndex + 1, lastIndex);
+		}
+
+		public static void SortByDescending<T>(this IList<T> collection, Func<T, float> compareFunc, int firstIndex = 0, int lastIndex = int.MinValue)
+		{
+			if (lastIndex == int.MinValue)
+			{
+				lastIndex = collection.Count - 1;
+			}
+			if (firstIndex >= lastIndex)
+			{
+				return;
+			}
+
+			int middleIndex = (lastIndex - firstIndex) / 2 + firstIndex, currentIndex = firstIndex;
+
+			collection.Swap(firstIndex, middleIndex);
+
+			for (int i = firstIndex + 1; i <= lastIndex; ++i)
+			{
+				if (compareFunc((T)collection[i]) > compareFunc((T)collection[firstIndex]))
 				{
 					collection.Swap(++currentIndex, i);
 				}
@@ -321,6 +413,18 @@ namespace PM.UsefulThings.Extensions
 			foreach (var item in collection)
 			{
 				result.Add(item);
+			}
+
+			return result;
+		}
+
+		public static List<R> Cast<T, R>(this IEnumerable<T> collection, System.Func<T, R> convertFunc)
+		{
+			var result = new List<R>();
+
+			foreach (var item in collection)
+			{
+				result.Add(convertFunc(item));
 			}
 
 			return result;

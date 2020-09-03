@@ -234,6 +234,14 @@ namespace PM.UsefulThings.Extensions
 			return popped;
 		}
 
+		public static T First<T>(this IList<T> list)
+		{
+			if (list.Count == 0)
+				return default(T);
+
+			return list[0];
+		}
+
 		public static T Last<T>(this IList<T> list)
 		{
 			var lastIndex = list.Count - 1;
@@ -472,6 +480,14 @@ namespace PM.UsefulThings.Extensions
 				}
 			}
 			return false;
+		}
+
+		public static Vector2 Rotate(this Vector2 vector, float angle)
+		{
+			Vector2 rotated_point;
+			rotated_point.x = vector.x * Mathf.Cos(angle) - vector.y * Mathf.Sin(angle);
+			rotated_point.y = vector.x * Mathf.Sin(angle) + vector.y * Mathf.Cos(angle);
+			return rotated_point;
 		}
 	}
 }
