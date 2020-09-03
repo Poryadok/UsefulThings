@@ -13,15 +13,15 @@ namespace PM.UsefulThings.Pathfinding
 				return new List<IPathNode>();
 			}
 
-			var frontier = new GenericPriorityQueue<IPathNode, int>(1000);
+			var frontier = new GenericPriorityQueue<IPathNode, float>(1000);
 			frontier.Enqueue(start, 0);
 			var cameFrom = new Dictionary<IPathNode, IPathNode>();
-			var costSoFar = new Dictionary<IPathNode, int>();
+			var costSoFar = new Dictionary<IPathNode, float>();
 			IPathNode current;
 			IPathNode next;
 			List<IPathNode> neighbours;
-			int newCost;
-			int priority;
+			float newCost;
+			float priority;
 
 			cameFrom[start] = null;
 			costSoFar[start] = 0;
@@ -36,18 +36,13 @@ namespace PM.UsefulThings.Pathfinding
 					break;
 				}
 
-				neighbours = current.GetNeighbours();
+				neighbours = current.GetOrderedNeighbours();
 
 				for (int i = 0; i < neighbours.Count; i++)
 				{
 					next = neighbours[i];
 
-					if (!next.IsWalkable && next != finish)
-					{
-						continue;
-					}
-
-					newCost = costSoFar[current] + 1;
+					newCost = costSoFar[current] + next.GetHeuristic(current);
 
 					if (!costSoFar.ContainsKey(next) || newCost < costSoFar[next])
 					{
@@ -60,7 +55,7 @@ namespace PM.UsefulThings.Pathfinding
 							costSoFar.Add(next, newCost);
 						}
 
-						priority = newCost + finish.GetHeuristic(next);
+						priority = newCost + next.GetHeuristic(finish);
 						if (frontier.Contains(next))
 						{
 							frontier.UpdatePriority(next, priority);
@@ -101,12 +96,10 @@ namespace PM.UsefulThings.Pathfinding
 		}
 	}
 
-	public interface IPathNode : IGenericPriorityQueueNode<int>
+	public interface IPathNode : IGenericPriorityQueueNode<float>
 	{
-		Vector2Int FieldPosition { get; }
-		bool IsWalkable { get; }
-
-		List<IPathNode> GetNeighbours();
-		int GetHeuristic(IPathNode target);
+		List<IPathNode> GetOrderedNeighbours();
+		float GetCost(IPathNode current);
+		float GetHeuristic(IPathNode target);
 	}
 }
