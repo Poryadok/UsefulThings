@@ -15,10 +15,10 @@ namespace PM.UsefulThings.Editor
 			if (GUILayout.Button("Find Windows"))
 			{
 				trgt.FindWindows();
-			}
 
-			EditorUtility.SetDirty(trgt);
-			AssetDatabase.SaveAssets();
+				EditorUtility.SetDirty(trgt);
+				AssetDatabase.SaveAssets();
+			}
 		}
 
 	}

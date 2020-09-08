@@ -5,16 +5,17 @@ namespace PM.UsefulThings
 {
 	public class WindowManagerUT : PrefabMonoSingleton<WindowManagerUT>
 	{
-		public WindowsHolderUT WindowsHolder;
-		public Transform MainRootPrefab;
-		public Transform AuxiliaryRootPrefab;
+		[SerializeField]
+		protected WindowsHolderUT WindowsHolder;
+		[SerializeField]
+		protected Transform MainRootPrefab;
+		[SerializeField]
+		protected Transform AuxiliaryRootPrefab;
 
 		public Canvas RaycastCanvas { get; private set; }
 
-		[SerializeField]
-		protected Transform mainRoot;
-		[SerializeField]
-		protected Transform auxiliaryRoot;
+		public Transform MainRoot;
+		public Transform AuxiliaryRoot;
 
 		protected Stack<IWindowUT> panels = new Stack<IWindowUT>();
 		protected Stack<IWindowUT> frames = new Stack<IWindowUT>();
@@ -24,36 +25,36 @@ namespace PM.UsefulThings
 		{
 			base.Awake();
 
-			if (mainRoot == null)
+			if (MainRoot == null)
 			{
-				mainRoot = Instantiate(MainRootPrefab);
+				MainRoot = Instantiate(MainRootPrefab);
 			}
-			if (auxiliaryRoot == null)
+			if (AuxiliaryRoot == null)
 			{
-				auxiliaryRoot = Instantiate(AuxiliaryRootPrefab);
+				AuxiliaryRoot = Instantiate(AuxiliaryRootPrefab);
 			}
 
-			DontDestroyOnLoad(mainRoot);
-			DontDestroyOnLoad(auxiliaryRoot);
+			DontDestroyOnLoad(MainRoot);
+			DontDestroyOnLoad(AuxiliaryRoot);
 
-			RaycastCanvas = mainRoot.GetComponent<Canvas>();
+			RaycastCanvas = MainRoot.GetComponent<Canvas>();
 
 #if UNITY_EDITOR
-			var childCount = mainRoot.transform.childCount;
+			var childCount = MainRoot.transform.childCount;
 			for (int i = 0; i < childCount; i++)
 			{
-				if (mainRoot.transform.GetChild(i).gameObject.GetComponent<MonoBehaviour>() is IWindowUT)
+				if (MainRoot.transform.GetChild(i).gameObject.GetComponent<MonoBehaviour>() is IWindowUT)
 				{
-					Destroy(mainRoot.transform.GetChild(i).gameObject);
+					Destroy(MainRoot.transform.GetChild(i).gameObject);
 				}
 			}
 
-			childCount = auxiliaryRoot.transform.childCount;
+			childCount = AuxiliaryRoot.transform.childCount;
 			for (int i = 0; i < childCount; i++)
 			{
-				if (auxiliaryRoot.transform.GetChild(i).gameObject.GetComponent<MonoBehaviour>() is IWindowUT)
+				if (AuxiliaryRoot.transform.GetChild(i).gameObject.GetComponent<MonoBehaviour>() is IWindowUT)
 				{
-					Destroy(auxiliaryRoot.transform.GetChild(i).gameObject);
+					Destroy(AuxiliaryRoot.transform.GetChild(i).gameObject);
 				}
 			}
 #endif
@@ -110,7 +111,7 @@ namespace PM.UsefulThings
 
 		public IWindowUT AddNewFrame(IWindowUT prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid)
 		{
-			var newFrame = CreateWindow(auxiliaryRoot, prefab, mode);
+			var newFrame = CreateWindow(AuxiliaryRoot, prefab, mode);
 
 			frames.Push(newFrame);
 			allWindows.Add(newFrame);
@@ -136,7 +137,7 @@ namespace PM.UsefulThings
 
 		public IWindowUT OpenNewPanel(IWindowUT prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid)
 		{
-			var newPanel = CreateWindow(mainRoot, prefab, mode);
+			var newPanel = CreateWindow(MainRoot, prefab, mode);
 
 			panels.Push(newPanel);
 			allWindows.Add(newPanel);
