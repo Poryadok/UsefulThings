@@ -5,11 +5,10 @@ using TMPro;
 
 namespace UIBinding.Components
 {
-	[RequireComponent(typeof(TextMeshProUGUI))]
 	public class TextBinding : BaseBinding<Property>
 	{
 		private TextMeshProUGUI m_text;
-		private InputField m_inputField;
+		private Text m_inputField;
 
 		[SerializeField]
 		private string m_format = "{0}";
@@ -23,7 +22,7 @@ namespace UIBinding.Components
 
 			if (m_text == null)
 			{
-				m_inputField = GetComponent<InputField>();
+				m_inputField = GetComponent<Text>();
 			}
 		}
 
@@ -39,8 +38,7 @@ namespace UIBinding.Components
 			{
 				m_text.text = string.Format(m_format, val);
 			}
-			else
-			if (m_inputField != null)
+			else if (m_inputField != null)
 			{
 				m_inputField.text = string.Format(m_format, val);
 			}

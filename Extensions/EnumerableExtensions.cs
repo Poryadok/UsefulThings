@@ -88,6 +88,23 @@ namespace PM.UsefulThings.Extensions
 			return default(T);
 		}
 
+		public static KeyValuePair<T, U> Find<T, U>(this IDictionary<T, U> collection, Predicate<KeyValuePair<T, U>> predicate)
+		{
+			if (collection.IsEmpty())
+			{
+				return default(KeyValuePair<T, U>);
+			}
+
+			foreach (var item in collection)
+			{
+				if (predicate(item))
+				{
+					return item;
+				}
+			}
+			return default(KeyValuePair<T, U>);
+		}
+
 		public static T FindSmallest<T>(this ICollection<T> collection, Predicate<T> predicate, Func<T, int> evaluator)
 		{
 			if (collection.IsEmpty())
@@ -120,23 +137,6 @@ namespace PM.UsefulThings.Extensions
 				}
 			}
 			return result;
-		}
-
-		public static KeyValuePair<T, U> Find<T, U>(this IDictionary<T, U> collection, Predicate<KeyValuePair<T, U>> predicate)
-		{
-			if (collection.IsEmpty())
-			{
-				return default(KeyValuePair<T, U>);
-			}
-
-			foreach (var item in collection)
-			{
-				if (predicate(item))
-				{
-					return item;
-				}
-			}
-			return default(KeyValuePair<T, U>);
 		}
 
 		public static T FindSmallest<T>(this ICollection<T> collection, Predicate<T> predicate, Func<T, float> evaluator)
