@@ -10,12 +10,20 @@ namespace PM.UsefulThings
 {
 	public class PetalButton : Button
 	{
+		public event System.Action OnClose;
+
 		public Button OptionPrefab;
 
 		private PetalOption[] options;
 		public Button[] buttons;
 
 		private FloatProperty arcPerOption = new FloatProperty();
+
+		protected override void Start()
+		{
+			base.Start();
+			this.GetComponent<Canvas>().worldCamera = Camera.main;
+		}
 
 		public void FillOptions(PetalOption[] options)
 		{
@@ -45,8 +53,9 @@ namespace PM.UsefulThings
 			{
 				if (options.Length > i)
 				{
-					var pass = i;
+					buttons[i].GetComponent<Image>().sprite = options[i].Sprite;
 					buttons[i].gameObject.SetActive(true);
+					var pass = i;
 					buttons[i].onClick.AddListener(delegate { OnButtonClick(pass); });
 				}
 				else
@@ -59,12 +68,13 @@ namespace PM.UsefulThings
 		public void OnButtonClick(int index)
 		{
 			options[index].Action.SafeCall();
-			Destroy(this.gameObject);
+			Close();
 		}
 
 		public void Close()
 		{
 			Destroy(this.gameObject);
+			OnClose.SafeCall();
 		}
 	}
 
