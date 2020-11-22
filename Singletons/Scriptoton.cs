@@ -3,6 +3,10 @@
 namespace PM.UsefulThings
 {
 	// singleton based on scriptable object
+	/// <summary>
+	/// to create instance copypast this and change name
+	/// [CreateAssetMenu(fileName = "ManagerName", menuName = "Scriptoton/ManagerName", order = 10)]
+	/// </summary>
 	public class Scriptoton<T> : ScriptableObject where T : ScriptableObject
 	{
 		private static T _instance;
@@ -38,19 +42,20 @@ namespace PM.UsefulThings
 
 						if (FindObjectsOfType(typeof(T)).Length > 1)
 						{
-							Debug.LogError("[Singleton] Something went really wrong " +
+							Debug.LogError("[Scriptoton] Something went really wrong " +
 								" - there should never be more than 1 singleton!");
-							return _instance;
+						}
+
+						//trying to load instance
+						if (_instance == null)
+						{
+							_instance = Resources.Load($"Scriptotons/{typeof(T).Name}") as T;
 						}
 
 						if (_instance == null)
 						{
-							//instance not found. create new instance
-							_instance = CreateInstance<T>();
-
-							Debug.Log("[Singleton] An instance of " + typeof(T) +
-								" is needed in the scene, so '" + _instance +
-								"' was created.");
+							Debug.LogError("Scriptoton can't create instance");
+							return null;
 						}
 					}
 
