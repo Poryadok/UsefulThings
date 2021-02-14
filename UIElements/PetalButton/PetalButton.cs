@@ -55,7 +55,9 @@ namespace PM.UsefulThings
 				{
 					buttons[i].GetComponent<Image>().sprite = options[i].Sprite;
 					buttons[i].gameObject.SetActive(true);
-					var pass = i;
+                    buttons[i].interactable = options[i].IsInteractable;
+
+                    var pass = i;
 					buttons[i].onClick.AddListener(delegate { OnButtonClick(pass); });
 				}
 				else
@@ -82,11 +84,13 @@ namespace PM.UsefulThings
 	{
 		public Sprite Sprite;
 		public System.Action Action;
+		public bool IsInteractable;
 
-		public PetalOption(Sprite sprite, System.Action action)
+		public PetalOption(Sprite sprite, System.Action action, bool isInteractable = true)
 		{
 			this.Sprite = sprite;
 			this.Action = action;
+            this.IsInteractable = isInteractable;
 		}
 	}
 }
