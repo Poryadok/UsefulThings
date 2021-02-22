@@ -105,7 +105,69 @@ namespace PM.UsefulThings.Extensions
 			return default(KeyValuePair<T, U>);
 		}
 
-		public static T FindSmallest<T>(this ICollection<T> collection, Predicate<T> predicate, Func<T, int> evaluator)
+        public static T FindSmallest<T>(this ICollection<T> collection, Func<T, int> evaluator)
+        {
+            if (collection.IsEmpty())
+            {
+                return default(T);
+            }
+
+            bool hasResult = false;
+            var value = int.MaxValue;
+            T result = default(T);
+
+            foreach (var item in collection)
+            {
+                if (hasResult)
+                {
+                    if (evaluator(item) < value)
+                    {
+                        result = item;
+                        value = evaluator(item);
+                    }
+                }
+                else
+                {
+                    value = evaluator(item);
+                    result = item;
+                    hasResult = true;
+                }
+            }
+            return result;
+        }
+
+        public static T FindSmallest<T>(this ICollection<T> collection, Func<T, float> evaluator)
+        {
+            if (collection.IsEmpty())
+            {
+                return default(T);
+            }
+
+            bool hasResult = false;
+            var value = float.MaxValue;
+            T result = default(T);
+
+            foreach (var item in collection)
+            {
+                if (hasResult)
+                {
+                    if (evaluator(item) < value)
+                    {
+                        result = item;
+                        value = evaluator(item);
+                    }
+                }
+                else
+                {
+                    value = evaluator(item);
+                    result = item;
+                    hasResult = true;
+                }
+            }
+            return result;
+        }
+
+        public static T FindSmallest<T>(this ICollection<T> collection, Predicate<T> predicate, Func<T, int> evaluator)
 		{
 			if (collection.IsEmpty())
 			{
@@ -173,7 +235,69 @@ namespace PM.UsefulThings.Extensions
 			return result;
 		}
 
-		public static T FindBiggest<T>(this ICollection<T> collection, Predicate<T> predicate, Func<T, int> evaluator)
+        public static T FindBiggest<T>(this ICollection<T> collection, Func<T, int> evaluator)
+        {
+            if (collection.IsEmpty())
+            {
+                return default(T);
+            }
+
+            bool hasResult = false;
+            var value = int.MinValue;
+            T result = default(T);
+
+            foreach (var item in collection)
+            {
+                if (hasResult)
+                {
+                    if (evaluator(item) > value)
+                    {
+                        value = evaluator(item);
+                        result = item;
+                    }
+                }
+                else
+                {
+                    value = evaluator(item);
+                    result = item;
+                    hasResult = true;
+                }
+            }
+            return result;
+        }
+
+        public static T FindBiggest<T>(this ICollection<T> collection, Func<T, float> evaluator)
+        {
+            if (collection.IsEmpty())
+            {
+                return default(T);
+            }
+
+            bool hasResult = false;
+            var value = float.MinValue;
+            T result = default(T);
+
+            foreach (var item in collection)
+            {
+                if (hasResult)
+                {
+                    if (evaluator(item) > value)
+                    {
+                        value = evaluator(item);
+                        result = item;
+                    }
+                }
+                else
+                {
+                    value = evaluator(item);
+                    result = item;
+                    hasResult = true;
+                }
+            }
+            return result;
+        }
+
+        public static T FindBiggest<T>(this ICollection<T> collection, Predicate<T> predicate, Func<T, int> evaluator)
 		{
 			if (collection.IsEmpty())
 			{
