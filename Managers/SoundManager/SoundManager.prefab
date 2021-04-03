@@ -56,17 +56,6 @@ MonoBehaviour:
   _musicVolume: 1
   _voiceVolume: 1
   _sfxVolume: 1
-  MenuMusic:
-  - {fileID: 8300000, guid: d79a59c5bc4b69e499756c3b1f770e2f, type: 3}
-  GameplayMusic:
-  - {fileID: 8300000, guid: f68c7c8d4f1232646bfb6d33e5bee02b, type: 3}
-  - {fileID: 8300000, guid: 524a69e98966d444eb390ced4b1251ec, type: 3}
-  - {fileID: 8300000, guid: cc74c1982c1f0574a9a45d3730221aaa, type: 3}
-  - {fileID: 8300000, guid: da67fb29c45fe1749a63b1634599aa9a, type: 3}
-  - {fileID: 8300000, guid: ac85e803194944d4dab24793c31f99bd, type: 3}
-  GameOverVoice: {fileID: 8300000, guid: 3c208b163392d434c859c4e8c23603d5, type: 3}
-  StartMelody: {fileID: 8300000, guid: bb13120922b695143aabc268a15ff44e, type: 3}
-  SuccessSfx: {fileID: 8300000, guid: ead1a6c04c0763f40983db9a0f507c3e, type: 3}
 --- !u!82 &82167797074185256
 AudioSource:
   m_ObjectHideFlags: 0
@@ -173,7 +162,7 @@ AudioSource:
   m_GameObject: {fileID: 1771989726073214}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 243993255244339532, guid: 528fa7f50fae3f44894923132fd4dd9d,
+  OutputAudioMixerGroup: {fileID: -3492094405694537836, guid: 528fa7f50fae3f44894923132fd4dd9d,
     type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
