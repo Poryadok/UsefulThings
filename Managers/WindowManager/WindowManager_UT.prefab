@@ -43,10 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a4014c96a58bbe419b1523b81e9c102, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WindowsHolder: {fileID: 11400000, guid: 407f756c4c5ec0a4f864fd51bd322861, type: 2}
+  WindowsHolder: {fileID: 11400000, guid: 82e267188c2e3c04fb00b0167adea9da, type: 2}
   MainRootPrefab: {fileID: 224898564595226654, guid: 71f9d2af3b7250646b0363b5f832e189,
     type: 3}
   AuxiliaryRootPrefab: {fileID: 224619951780880984, guid: 39deae957e39d324bbd66991ef358ec7,
     type: 3}
-  mainRoot: {fileID: 0}
-  auxiliaryRoot: {fileID: 0}
+  MainRoot: {fileID: 0}
+  AuxiliaryRoot: {fileID: 0}

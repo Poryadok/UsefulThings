@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bacc22bf7deb907439a4be523f1b141d, type: 3}
-  m_Name: LocalizationLocaleGoogleIds
+  m_Name: LocalizationLocaleGoogleIds_UT
   m_EditorClassIdentifier: Assembly-CSharp-firstpass:PM.UsefulThings:LocalizationLocaleGoogleIds
   Link: https://docs.google.com/spreadsheets/d/e/2PACX-1vQpKSHcuTuvaf1e_h6rEpt5zaz2Db9g7HlZmIHV5OVeW7bb7UjYiafAbL8ZiOOsswDGVfSxnjVJi4Cm/pub
   Locales:

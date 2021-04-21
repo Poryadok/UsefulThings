@@ -50,6 +50,14 @@ namespace PM.UsefulThings
 		{
 			this.IsInteractable = isInteractable;
 			this.IsFocused = isFocused;
+            if (IsInteractable)
+            {
+                OnSetInteractable.Invoke(this, true);
+            }
+            if (IsFocused)
+            {
+                OnSetFocus.Invoke(this, true);
+            }
 			return this;
 		}
 	}

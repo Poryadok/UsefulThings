@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ffc938ddb7a85024f907ac8261465692, type: 3}
-  m_Name: WindowsHolderUT
+  m_Name: WindowsHolder_UT
   m_EditorClassIdentifier: 
   Windows:
   - {fileID: 5922549859934676380, guid: 5cb9ed5576a7f5f4ab83dfd2dfe584a7, type: 3}
