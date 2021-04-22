@@ -31,12 +31,13 @@ public class CSVSerializer
 
 	static private object CreateArray(Type type, List<string[]> rows, bool isColMarked = true)
 	{
-		Array array_value = Array.CreateInstance(type, rows.Count - 1);
-		Dictionary<string, int> table = new Dictionary<string, int>();
+        Array array_value;
 
 		if (isColMarked)
 		{
-			for (int i = 0; i < rows[0].Length; i++)
+            array_value = Array.CreateInstance(type, rows.Count - 1);
+            Dictionary<string, int> table = new Dictionary<string, int>();
+            for (int i = 0; i < rows[0].Length; i++)
 			{
 				string id = rows[0][i];
 				string id2 = "";
@@ -67,10 +68,11 @@ public class CSVSerializer
 		}
 		else
 		{
-			for (int i = 1; i < rows.Count; i++)
+            array_value = Array.CreateInstance(type, rows.Count);
+            for (int i = 0; i < rows.Count; i++)
 			{
 				object rowdata = Create(rows[i], type);
-				array_value.SetValue(rowdata, i - 1);
+				array_value.SetValue(rowdata, i);
 			}
 		}
 

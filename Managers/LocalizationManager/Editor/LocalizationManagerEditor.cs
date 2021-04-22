@@ -16,7 +16,7 @@ namespace PM.UsefulThings
 		[MenuItem("Tools/Localization/Download")]
 		private static void Init()
 		{
-			var localesIds = Resources.Load<LocalizationLocaleGoogleIds>("LocalizationLocaleGoogleIds");
+			var localesIds = Resources.LoadAll<LocalizationLocaleGoogleIds>("")[0];
 			var locales = localesIds.Locales;
 			var linkPostfix = "?gid={0}&single=true&output=csv";
 			string link = localesIds.Link + linkPostfix;
