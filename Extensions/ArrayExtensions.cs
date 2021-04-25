@@ -508,22 +508,39 @@ namespace PM.UsefulThings.Extensions
 				return (array == null) ? new T[0] : array;
 			}
 
-			var result = new T[array.Length - 1];
+            return array.RemoveAtChecked(index);
+        }
 
-			if (index > 0)
-			{
-				Array.Copy(array, 0, result, 0, index);
-			}
+        public static T[] Remove<T>(this T[] array, T item)
+        {
+            if ((array.IsEmpty()))
+            {
+                return (array == null) ? new T[0] : array;
+            }
 
-			if (index < array.Length - 1)
-			{
-				Array.Copy(array, index + 1, result, index, array.Length - index - 1);
-			}
+            var index = array.IndexOf(item);
 
-			return result;
-		}
+            return array.RemoveAtChecked(index);
+        }
 
-		public static T[] RemoveAll<T>(this T[] array, T value) where T : class
+        public static T[] RemoveAtChecked<T>(this T[] array, int index)
+        {
+            var result = new T[array.Length - 1];
+
+            if (index > 0)
+            {
+                Array.Copy(array, 0, result, 0, index);
+            }
+
+            if (index < array.Length - 1)
+            {
+                Array.Copy(array, index + 1, result, index, array.Length - index - 1);
+            }
+
+            return result;
+        }
+
+        public static T[] RemoveAll<T>(this T[] array, T value) where T : class
 		{
 			if (array.IsEmpty())
 			{
