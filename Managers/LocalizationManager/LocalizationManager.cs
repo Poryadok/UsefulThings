@@ -16,7 +16,7 @@ namespace PM.UsefulThings
 
 		public List<SystemLanguage> AvailableLanguages = new List<SystemLanguage>()
 		{
-			//SystemLanguage.English,
+			SystemLanguage.English,
 			SystemLanguage.Russian
 		};
 

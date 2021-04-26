@@ -286,12 +286,14 @@ namespace PM.UsefulThings
 		}
 
 		private bool isMusicShuffle { get; set; }
+		private bool isMusicCollectionLoop { get; set; }
 		private AudioClip[] musicCollection;
 		private int increment;
 		private Dictionary<AudioSource, int> notebook = new Dictionary<AudioSource, int>();
 
-		private void Start()
+		protected override void Awake()
 		{
+            base.Awake();
 			_isMasterOn = PlayerPrefs.HasKey("Master") ? PlayerPrefs.GetInt("Master") == 1 : true;
 			_isMusicOn = PlayerPrefs.HasKey("Misuc") ? PlayerPrefs.GetInt("Misic") == 1 : true;
 			_isVoiceOn = PlayerPrefs.HasKey("Voice") ? PlayerPrefs.GetInt("Voice") == 1 : true;
@@ -337,23 +339,48 @@ namespace PM.UsefulThings
 				//doesn't matter shuffle or not
 				if (musicCollection.Length == 1)
 				{
-					clip = musicCollection[0];
+                    if (isMusicCollectionLoop)
+                    {
+                        clip = musicCollection[0];
+                    }
+                    else
+                    {
+                        musicCollection = null;
+                    }
 				}
-				//shuffle
+				//shuffle can't go without loop
 				else if (isMusicShuffle)
 				{
 					do
 					{
 						clip = musicCollection[UnityEngine.Random.Range(0, musicCollection.Length)];
 					} while (MusicSource.clip == clip);
-				}
+
+                    PlayClip(MusicSource, clip);
+                }
 				//order
 				else
 				{
-					clip = musicCollection[(musicCollection.IndexOf(MusicSource.clip) + 1) % musicCollection.Length];
-				}
+                    if (isMusicCollectionLoop)
+                    {
+                        clip = musicCollection[(musicCollection.IndexOf(MusicSource.clip) + 1) % musicCollection.Length];
 
-				PlayClip(MusicSource, clip);
+                        PlayClip(MusicSource, clip);
+                    }
+                    else
+                    {
+                        var index = (musicCollection.IndexOf(MusicSource.clip) + 1);
+                        if (index >= musicCollection.Length)
+                        {
+                            musicCollection = null;
+                        }
+                        else
+                        {
+                            clip = musicCollection[index];
+                            PlayClip(MusicSource, clip);
+                        }
+                    }
+				}
 			}
 
 #if UNITY_EDITOR
@@ -523,12 +550,12 @@ namespace PM.UsefulThings
 			PlayMusic((new AudioClip[] { clip }));
 		}
 
-		/// <summary>
-		/// if shuffle is off, music will play by order
-		/// </summary>
-		/// <param name="clips"></param>
-		/// <param name="_isMusicShuffle"></param>
-		public void PlayMusic(AudioClip[] clips, bool _isMusicShuffle = false)
+        /// <summary>
+        /// if shuffle is off, music will play by order
+        /// </summary>
+        /// <param name="clips"></param>
+        /// <param name="_isMusicShuffle"></param>
+        public void PlayMusic(AudioClip[] clips, bool _isMusicShuffle = false, bool isLooped = true)
 		{
 			if (clips.Length == 0 || this.musicCollection == clips)
 			{
@@ -543,6 +570,12 @@ namespace PM.UsefulThings
 
 			this.musicCollection = clips;
 			this.isMusicShuffle = _isMusicShuffle;
+            this.isMusicCollectionLoop = isLooped;
+
+            if (isMusicShuffle && !isMusicCollectionLoop)
+            {
+                Debug.LogError("shuffle can't be not looped");
+            }
 
 			//set, but not play if you shouldn't
 			if (!IsMusicOn)
