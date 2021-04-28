@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PM.UsefulThings.Pathfinding
+namespace PM.UsefulThings.Pathfinding.COP
 {
 	public static class CircularObstaclePathfinding
 	{
