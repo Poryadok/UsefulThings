@@ -55,7 +55,8 @@ namespace UIBinding.Components
 		private void OnLocalizationChanged()
 		{
 			LocalizeText();
-		}
+            OnUpdateValue();
+        }
 
 		protected override void OnUpdateValue()
 		{

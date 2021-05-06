@@ -342,6 +342,8 @@ namespace PM.UsefulThings
                     if (isMusicCollectionLoop)
                     {
                         clip = musicCollection[0];
+
+                        PlayClip(MusicSource, clip);
                     }
                     else
                     {
