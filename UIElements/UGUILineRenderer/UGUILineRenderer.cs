@@ -41,14 +41,20 @@ namespace PM.UsefulThings.UI
 
         private static readonly Vector2 UV_TOP_LEFT = Vector2.zero;
         private static readonly Vector2 UV_BOTTOM_LEFT = new Vector2(0, 1);
-        private static readonly Vector2 UV_TOP_CENTER = new Vector2(0.5f, 0);
-        private static readonly Vector2 UV_BOTTOM_CENTER = new Vector2(0.5f, 1);
+        private static readonly Vector2 UV_TOP_CENTERL = new Vector2(0.25f, 0);
+        private static readonly Vector2 UV_BOTTOM_CENTERL = new Vector2(0.25f, 1);
+        private static readonly Vector2 UV_TOP_CENTERR = new Vector2(0.75f, 0);
+        private static readonly Vector2 UV_BOTTOM_CENTERR = new Vector2(0.75f, 1);
         private static readonly Vector2 UV_TOP_RIGHT = new Vector2(1, 0);
         private static readonly Vector2 UV_BOTTOM_RIGHT = new Vector2(1, 1);
 
-        private static readonly Vector2[] startUvs = new[] { UV_TOP_LEFT, UV_BOTTOM_LEFT, UV_BOTTOM_CENTER, UV_TOP_CENTER };
-        private static readonly Vector2[] middleUvs = new[] { UV_TOP_CENTER, UV_BOTTOM_CENTER, UV_BOTTOM_CENTER, UV_TOP_CENTER };
-        private static readonly Vector2[] endUvs = new[] { UV_TOP_CENTER, UV_BOTTOM_CENTER, UV_BOTTOM_RIGHT, UV_TOP_RIGHT };
+        private static readonly Vector2[] startUvs = new[] { UV_TOP_LEFT, UV_BOTTOM_LEFT, UV_BOTTOM_CENTERL, UV_TOP_CENTERL };
+        private static readonly Vector2[] middleUvs = new[] { UV_TOP_CENTERL, UV_BOTTOM_CENTERL, UV_BOTTOM_CENTERR, UV_TOP_CENTERR };
+        private static readonly Vector2[] endUvs = new[] { UV_TOP_CENTERR, UV_BOTTOM_CENTERR, UV_BOTTOM_RIGHT, UV_TOP_RIGHT };
+
+        public Sprite Image;
+
+        public override Texture mainTexture => Image.texture;
 
         [SerializeField]
         private Rect _UVRect = new Rect(0f, 0f, 1f, 1f);
@@ -267,7 +273,7 @@ namespace PM.UsefulThings.UI
             // Add the line segments to the vertex helper, creating any joins as needed
             for (var i = 0; i < segments.Count; i++)
             {
-                if (!LineList && i < segments.Count - 1)
+                if (i < segments.Count - 1)
                 {
                     var vec1 = segments[i][1].position - segments[i][2].position;
                     var vec2 = segments[i + 1][2].position - segments[i + 1][1].position;
@@ -318,53 +324,53 @@ namespace PM.UsefulThings.UI
                         vh.AddUIVertexQuad(join);
                     }
 
-                    if (joinType == JoinType.Round)
-                    {
-                        // Tessellate an approximation of a circle
-                        var center = new Vector2(pointsToDraw[i + 1].x * sizeX + offsetX, pointsToDraw[i + 1].y * sizeY + offsetY);
-                        Vector2 v0 = center;
-                        Vector2 uv0 = new Vector2(0, 0.5f);
+                    //if (joinType == JoinType.Round)
+                    //{
+                    //    // Tessellate an approximation of a circle
+                    //    var center = new Vector2(pointsToDraw[i + 1].x * sizeX + offsetX, pointsToDraw[i + 1].y * sizeY + offsetY);
+                    //    Vector2 v0 = center;
+                    //    Vector2 uv0 = new Vector2(0, 0.5f);
 
-                        if (miterDistance < vec1.magnitude / 2 && miterDistance < vec2.magnitude / 2 && angle > MIN_BEVEL_NICE_JOIN)
-                        {
-                            if (sign < 0)
-                            {
-                                segments[i][2].position = miterPointA;
-                                segments[i + 1][1].position = miterPointA;
-                                v0 = miterPointA;
-                                uv0 = segments[i][2].uv0;
-                            }
-                            else
-                            {
-                                segments[i][3].position = miterPointB;
-                                segments[i + 1][0].position = miterPointB;
-                                v0 = miterPointB;
-                                uv0 = segments[i][3].uv0;
-                            }
-                        }
+                    //    if (miterDistance < vec1.magnitude / 2 && miterDistance < vec2.magnitude / 2 && angle > MIN_BEVEL_NICE_JOIN)
+                    //    {
+                    //        if (sign < 0)
+                    //        {
+                    //            segments[i][2].position = miterPointA;
+                    //            segments[i + 1][1].position = miterPointA;
+                    //            v0 = miterPointA;
+                    //            uv0 = segments[i][2].uv0;
+                    //        }
+                    //        else
+                    //        {
+                    //            segments[i][3].position = miterPointB;
+                    //            segments[i + 1][0].position = miterPointB;
+                    //            v0 = miterPointB;
+                    //            uv0 = segments[i][3].uv0;
+                    //        }
+                    //    }
 
-                        var two = segments[i][3].position - (Vector3)center;
-                        var one = segments[i + 1][0].position - (Vector3)center;
-                        var uv1 = segments[i][3].uv0;
-                        if (sign > 0)
-                        {
-                            one = segments[i][2].position - (Vector3)center;
-                            two = segments[i + 1][1].position - (Vector3)center;
-                            uv1 = segments[i][2].uv0;
-                        }
+                    //    var two = segments[i][3].position - (Vector3)center;
+                    //    var one = segments[i + 1][0].position - (Vector3)center;
+                    //    var uv1 = segments[i][3].uv0;
+                    //    if (sign > 0)
+                    //    {
+                    //        one = segments[i][2].position - (Vector3)center;
+                    //        two = segments[i + 1][1].position - (Vector3)center;
+                    //        uv1 = segments[i][2].uv0;
+                    //    }
 
-                        var tesselation = 12;
-                        List<UIVertex> verts = new List<UIVertex>();
+                    //    var tesselation = 12;
+                    //    List<UIVertex> verts = new List<UIVertex>();
 
-                        var v1 = one;
-                        for (var iteration = 0; iteration < tesselation; iteration++)
-                        {
-                            var v2 = Vector3.RotateTowards(v1, two, Mathf.PI / tesselation, 0.1f);
-                            verts.AddRange(CreateTriangle(new[] { v0, center + (Vector2)v1, center + (Vector2)v2 }, new[] { uv0, uv1, uv1 }));
-                            v1 = v2;
-                        }
-                        vh.AddUIVertexTriangleStream(verts);
-                    }
+                    //    var v1 = one;
+                    //    for (var iteration = 0; iteration < tesselation; iteration++)
+                    //    {
+                    //        var v2 = Vector3.RotateTowards(v1, two, Mathf.PI / tesselation, 0.1f);
+                    //        verts.AddRange(CreateTriangle(new[] { v0, center + (Vector2)v1, center + (Vector2)v2 }, new[] { uv0, uv1, uv1 }));
+                    //        v1 = v2;
+                    //    }
+                    //    vh.AddUIVertexTriangleStream(verts);
+                    //}
                 }
                 vh.AddUIVertexQuad(segments[i]);
             }
