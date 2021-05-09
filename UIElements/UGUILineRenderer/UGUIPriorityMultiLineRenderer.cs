@@ -41,16 +41,10 @@ namespace PM.UsefulThings.UI
 
         private static readonly Vector2 UV_TOP_LEFT = Vector2.zero;
         private static readonly Vector2 UV_BOTTOM_LEFT = new Vector2(0, 1);
-        private static readonly Vector2 UV_TOP_CENTERL = new Vector2(0.25f, 0);
-        private static readonly Vector2 UV_BOTTOM_CENTERL = new Vector2(0.25f, 1);
-        private static readonly Vector2 UV_TOP_CENTERR = new Vector2(0.75f, 0);
-        private static readonly Vector2 UV_BOTTOM_CENTERR = new Vector2(0.75f, 1);
-        private static readonly Vector2 UV_TOP_RIGHT = new Vector2(1, 0);
         private static readonly Vector2 UV_BOTTOM_RIGHT = new Vector2(1, 1);
+        private static readonly Vector2 UV_TOP_RIGHT = new Vector2(1, 0);
 
-        private static readonly Vector2[] startUvs = new[] { UV_TOP_LEFT, UV_BOTTOM_LEFT, UV_BOTTOM_CENTERL, UV_TOP_CENTERL };
-        private static readonly Vector2[] middleUvs = new[] { UV_TOP_CENTERL, UV_BOTTOM_CENTERL, UV_BOTTOM_CENTERR, UV_TOP_CENTERR };
-        private static readonly Vector2[] endUvs = new[] { UV_TOP_CENTERR, UV_BOTTOM_CENTERR, UV_BOTTOM_RIGHT, UV_TOP_RIGHT };
+        private static readonly Vector2[] fullUvs = new[] { UV_TOP_LEFT, UV_BOTTOM_LEFT, UV_BOTTOM_RIGHT, UV_TOP_RIGHT };
 
         public Sprite Image;
 
@@ -194,17 +188,22 @@ namespace PM.UsefulThings.UI
 
         protected override void OnPopulateMesh(VertexHelper vh)
         {
-            if (_lines == null || _lines.Count < 2)
+            vh.Clear();
+
+            if (_lines == null || _lines.Count == 0)
             {
                 return;
             }
-
-            vh.Clear();
 
             Lines.Sort((x, y) => x.Priority > y.Priority ? 1 : -1);
 
             foreach (var line in Lines)
             {
+                if (line.Points.Count < 2)
+                {
+                    continue;
+                }
+
                 var color = line.Color;
                 var pointsToDraw = line.Points;
                 //If Bezier is desired, pick the implementation
@@ -266,38 +265,75 @@ namespace PM.UsefulThings.UI
                     }
                 }
 
+                var tileLength = Image.rect.width / Image.rect.height * Mathf.Max(StartThickness, EndThickness);
+
+                var uvOffset = 0f;
                 // Generate the quads that make up the wide line
-                var segments = new List<UIVertex[]>();
+                var lineSegments = new List<List<UIVertex[]>>();
                 for (var i = 1; i < pointsToDraw.Count; i++)
                 {
-                    var start = pointsToDraw[i - 1];
-                    var end = pointsToDraw[i];
-                    start = new Vector2(start.x * sizeX + offsetX, start.y * sizeY + offsetY);
-                    end = new Vector2(end.x * sizeX + offsetX, end.y * sizeY + offsetY);
+                    var segmentStart = pointsToDraw[i - 1];
+                    var segmentEnd = pointsToDraw[i];
 
-                    var startthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, (pointsToDistance[i - 1] / distance)) : StartThickness;
-                    var endthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, (pointsToDistance[i] / distance)) : StartThickness;
-
-                    if (LineCaps && i == 1)
+                    if (segmentStart == segmentEnd)
                     {
-                        segments.Add(CreateLineCap(start, end, startthickness, endthickness, SegmentType.Start, color));
+                        continue;
                     }
 
-                    segments.Add(CreateLineSegment(start, end, startthickness, endthickness, SegmentType.Middle, color));
+                    var segments = new List<UIVertex[]>();
+                    lineSegments.Add(segments);
 
-                    if (LineCaps && i == pointsToDraw.Count - 1)
+                    while (segmentStart != segmentEnd)
                     {
-                        segments.Add(CreateLineCap(start, end, startthickness, endthickness, SegmentType.End, color));
+                        var start = segmentStart;
+                        var end = segmentEnd;
+                        float startUV;
+                        float endUV;
+
+                        if (Vector2.Distance(start, end) > tileLength * (1 - uvOffset))
+                        {
+                            end = start + (end - start).normalized * tileLength * (1 - uvOffset);
+                            startUV = uvOffset;
+                            endUV = 1f;
+                            uvOffset = 0f;
+                            segmentStart = end;
+                        }
+                        else
+                        {
+                            startUV = uvOffset;
+                            endUV = uvOffset + Vector2.Distance(start, end) / tileLength;
+                            uvOffset = endUV;
+                            segmentStart = segmentEnd;
+                        }
+
+                        start = new Vector2(start.x * sizeX + offsetX, start.y * sizeY + offsetY);
+                        end = new Vector2(end.x * sizeX + offsetX, end.y * sizeY + offsetY);
+
+                        var startthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, (pointsToDistance[i - 1] / distance)) : StartThickness;
+                        var endthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, (pointsToDistance[i] / distance)) : StartThickness;
+
+                        //if (LineCaps && i == 1)
+                        //{
+                        //    segments.Add(CreateLineCap(start, end, startthickness, endthickness, SegmentType.Start, color));
+                        //}
+
+                        segments.Add(CreateLineSegment(start, end, startthickness, endthickness, GetUVs(startUV, endUV), color));
+
+
+                        //if (LineCaps && i == pointsToDraw.Count - 1)
+                        //{
+                        //    segments.Add(CreateLineCap(start, end, startthickness, endthickness, SegmentType.End, color));
+                        //}
                     }
                 }
 
                 // Add the line segments to the vertex helper, creating any joins as needed
-                for (var i = 0; i < segments.Count; i++)
+                for (var i = 0; i < lineSegments.Count; i++)
                 {
-                    if (i < segments.Count - 1)
+                    if (i < lineSegments.Count - 1)
                     {
-                        var vec1 = segments[i][1].position - segments[i][2].position;
-                        var vec2 = segments[i + 1][2].position - segments[i + 1][1].position;
+                        var vec1 = lineSegments[i].Last()[1].position - lineSegments[i].Last()[2].position;
+                        var vec2 = lineSegments[i + 1].First()[2].position - lineSegments[i + 1].First()[1].position;
                         var angle = Vector2.Angle(vec1, vec2) * Mathf.Deg2Rad;
 
                         // Positive sign means the line is turning in a 'clockwise' direction
@@ -305,8 +341,8 @@ namespace PM.UsefulThings.UI
 
                         // Calculate the miter point
                         var miterDistance = isCalcThickness ? StartThickness : Mathf.Lerp(0, distance, pointsToDistance[i + 1]) / (2 * Mathf.Tan(angle / 2));
-                        var miterPointA = segments[i][2].position - vec1.normalized * miterDistance * sign;
-                        var miterPointB = segments[i][3].position + vec1.normalized * miterDistance * sign;
+                        var miterPointA = lineSegments[i].Last()[2].position - vec1.normalized * miterDistance * sign;
+                        var miterPointB = lineSegments[i].Last()[3].position + vec1.normalized * miterDistance * sign;
 
                         var joinType = LineJoins;
                         if (joinType == JoinType.Miter)
@@ -314,10 +350,10 @@ namespace PM.UsefulThings.UI
                             // Make sure we can make a miter join without too many artifacts.
                             if (miterDistance < vec1.magnitude / 2 && miterDistance < vec2.magnitude / 2 && angle > MIN_MITER_JOIN)
                             {
-                                segments[i][2].position = miterPointA;
-                                segments[i][3].position = miterPointB;
-                                segments[i + 1][0].position = miterPointB;
-                                segments[i + 1][1].position = miterPointA;
+                                lineSegments[i].Last()[2].position = miterPointA;
+                                lineSegments[i].Last()[3].position = miterPointB;
+                                lineSegments[i + 1].First()[0].position = miterPointB;
+                                lineSegments[i + 1].First()[1].position = miterPointA;
                             }
                             else
                             {
@@ -331,17 +367,17 @@ namespace PM.UsefulThings.UI
                             {
                                 if (sign < 0)
                                 {
-                                    segments[i][2].position = miterPointA;
-                                    segments[i + 1][1].position = miterPointA;
+                                    lineSegments[i].Last()[2].position = miterPointA;
+                                    lineSegments[i + 1].First()[1].position = miterPointA;
                                 }
                                 else
                                 {
-                                    segments[i][3].position = miterPointB;
-                                    segments[i + 1][0].position = miterPointB;
+                                    lineSegments[i].Last()[3].position = miterPointB;
+                                    lineSegments[i + 1].First()[0].position = miterPointB;
                                 }
                             }
 
-                            var join = new UIVertex[] { segments[i][2], segments[i][3], segments[i + 1][0], segments[i + 1][1] };
+                            var join = new UIVertex[] { lineSegments[i].Last()[2], lineSegments[i].Last()[3], lineSegments[i + 1].First()[0], lineSegments[i + 1].First()[1] };
                             vh.AddUIVertexQuad(join);
                         }
 
@@ -393,7 +429,10 @@ namespace PM.UsefulThings.UI
                         //    vh.AddUIVertexTriangleStream(verts);
                         //}
                     }
-                    vh.AddUIVertexQuad(segments[i]);
+                    foreach (var uiVert in lineSegments[i])
+                    {
+                        vh.AddUIVertexQuad(uiVert);
+                    }
                 }
             }
         }
@@ -412,35 +451,25 @@ namespace PM.UsefulThings.UI
             return vbo;
         }
 
-        private UIVertex[] CreateLineCap(Vector2 start, Vector2 end, float startTickness, float endThickness, SegmentType type, Color color)
+        //private UIVertex[] CreateLineCap(Vector2 start, Vector2 end, float startTickness, float endThickness, SegmentType type, Color color)
+        //{
+        //    if (type == SegmentType.Start)
+        //    {
+        //        var capStart = start - ((end - start).normalized * startTickness / 2);
+        //        return CreateLineSegment(capStart, start, startTickness, endThickness, SegmentType.Start, color);
+        //    }
+        //    else if (type == SegmentType.End)
+        //    {
+        //        var capEnd = end + ((end - start).normalized * endThickness / 2);
+        //        return CreateLineSegment(end, capEnd, startTickness, endThickness, SegmentType.End, color);
+        //    }
+
+        //    Debug.LogError("Bad SegmentType passed in to CreateLineCap. Must be SegmentType.Start or SegmentType.End");
+        //    return null;
+        //}
+
+        private UIVertex[] CreateLineSegment(Vector2 start, Vector2 end, float startTickness, float endThickness, Vector2[] uvs, Color color)
         {
-            if (type == SegmentType.Start)
-            {
-                var capStart = start - ((end - start).normalized * startTickness / 2);
-                return CreateLineSegment(capStart, start, startTickness, endThickness, SegmentType.Start, color);
-            }
-            else if (type == SegmentType.End)
-            {
-                var capEnd = end + ((end - start).normalized * endThickness / 2);
-                return CreateLineSegment(end, capEnd, startTickness, endThickness, SegmentType.End, color);
-            }
-
-            Debug.LogError("Bad SegmentType passed in to CreateLineCap. Must be SegmentType.Start or SegmentType.End");
-            return null;
-        }
-
-        private UIVertex[] CreateLineSegment(Vector2 start, Vector2 end, float startTickness, float endThickness, SegmentType type, Color color)
-        {
-            var uvs = middleUvs;
-            if (type == SegmentType.Start)
-            {
-                uvs = startUvs;
-            }
-            else if (type == SegmentType.End)
-            {
-                uvs = endUvs;
-            }
-
             Vector2 startoffset = new Vector2(start.y - end.y, end.x - start.x).normalized * startTickness / 2;
             Vector2 endoffset = new Vector2(start.y - end.y, end.x - start.x).normalized * endThickness / 2;
             var v1 = start - startoffset;
@@ -462,6 +491,40 @@ namespace PM.UsefulThings.UI
                 vbo[i] = vert;
             }
             return vbo;
+        }
+
+        private static Vector2[] GetUVs(float start, float end)
+        {
+            if (start == 0 && end == 1)
+            {
+                return fullUvs;
+            }
+
+            var result = new Vector2[4];
+
+            if (start == 0)
+            {
+                result[0] = fullUvs[0];
+                result[1] = fullUvs[1];
+            }
+            else
+            {
+                result[0] = new Vector2(start, 0);
+                result[1] = new Vector2(start, 1);
+            }
+
+            if (end == 1)
+            {
+                result[2] = fullUvs[2];
+                result[3] = fullUvs[3];
+            }
+            else
+            {
+                result[2] = new Vector2(end, 1);
+                result[3] = new Vector2(end, 0);
+            }
+
+            return result;
         }
 
     }
