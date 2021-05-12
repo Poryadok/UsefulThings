@@ -48,7 +48,9 @@ namespace PM.UsefulThings.UI
 
         public Sprite Image;
 
-        public override Texture mainTexture => Image.texture;
+        public bool UseColor = true;
+
+        public override Texture mainTexture => Image != null ? Image.texture : null;
 
         [SerializeField]
         private Rect _UVRect = new Rect(0f, 0f, 1f, 1f);
@@ -204,7 +206,7 @@ namespace PM.UsefulThings.UI
                     continue;
                 }
 
-                var color = line.Color;
+                var color = UseColor ? line.Color : line.Color + Color.white / 2;
                 var pointsToDraw = line.Points;
                 //If Bezier is desired, pick the implementation
                 //if (BezierMode != BezierType.None && m_points.Length > 3)
@@ -265,7 +267,7 @@ namespace PM.UsefulThings.UI
                     }
                 }
 
-                var tileLength = Image.rect.width / Image.rect.height * Mathf.Max(StartThickness, EndThickness);
+                float tileLength = Image == null ? 1 : Image.rect.width / Image.rect.height * Mathf.Max(StartThickness, EndThickness);
 
                 var uvOffset = 0f;
                 // Generate the quads that make up the wide line
@@ -344,90 +346,22 @@ namespace PM.UsefulThings.UI
                         var miterPointA = lineSegments[i].Last()[2].position - vec1.normalized * miterDistance * sign;
                         var miterPointB = lineSegments[i].Last()[3].position + vec1.normalized * miterDistance * sign;
 
-                        var joinType = LineJoins;
-                        if (joinType == JoinType.Miter)
+                        if (miterDistance < vec1.magnitude / 2 && miterDistance < vec2.magnitude / 2 && angle > MIN_BEVEL_NICE_JOIN)
                         {
-                            // Make sure we can make a miter join without too many artifacts.
-                            if (miterDistance < vec1.magnitude / 2 && miterDistance < vec2.magnitude / 2 && angle > MIN_MITER_JOIN)
+                            if (sign < 0)
                             {
                                 lineSegments[i].Last()[2].position = miterPointA;
-                                lineSegments[i].Last()[3].position = miterPointB;
-                                lineSegments[i + 1].First()[0].position = miterPointB;
                                 lineSegments[i + 1].First()[1].position = miterPointA;
                             }
                             else
                             {
-                                joinType = JoinType.Bevel;
+                                lineSegments[i].Last()[3].position = miterPointB;
+                                lineSegments[i + 1].First()[0].position = miterPointB;
                             }
                         }
 
-                        if (joinType == JoinType.Bevel)
-                        {
-                            if (miterDistance < vec1.magnitude / 2 && miterDistance < vec2.magnitude / 2 && angle > MIN_BEVEL_NICE_JOIN)
-                            {
-                                if (sign < 0)
-                                {
-                                    lineSegments[i].Last()[2].position = miterPointA;
-                                    lineSegments[i + 1].First()[1].position = miterPointA;
-                                }
-                                else
-                                {
-                                    lineSegments[i].Last()[3].position = miterPointB;
-                                    lineSegments[i + 1].First()[0].position = miterPointB;
-                                }
-                            }
-
-                            var join = new UIVertex[] { lineSegments[i].Last()[2], lineSegments[i].Last()[3], lineSegments[i + 1].First()[0], lineSegments[i + 1].First()[1] };
-                            vh.AddUIVertexQuad(join);
-                        }
-
-                        //if (joinType == JoinType.Round)
-                        //{
-                        //    // Tessellate an approximation of a circle
-                        //    var center = new Vector2(pointsToDraw[i + 1].x * sizeX + offsetX, pointsToDraw[i + 1].y * sizeY + offsetY);
-                        //    Vector2 v0 = center;
-                        //    Vector2 uv0 = new Vector2(0, 0.5f);
-
-                        //    if (miterDistance < vec1.magnitude / 2 && miterDistance < vec2.magnitude / 2 && angle > MIN_BEVEL_NICE_JOIN)
-                        //    {
-                        //        if (sign < 0)
-                        //        {
-                        //            segments[i][2].position = miterPointA;
-                        //            segments[i + 1][1].position = miterPointA;
-                        //            v0 = miterPointA;
-                        //            uv0 = segments[i][2].uv0;
-                        //        }
-                        //        else
-                        //        {
-                        //            segments[i][3].position = miterPointB;
-                        //            segments[i + 1][0].position = miterPointB;
-                        //            v0 = miterPointB;
-                        //            uv0 = segments[i][3].uv0;
-                        //        }
-                        //    }
-
-                        //    var two = segments[i][3].position - (Vector3)center;
-                        //    var one = segments[i + 1][0].position - (Vector3)center;
-                        //    var uv1 = segments[i][3].uv0;
-                        //    if (sign > 0)
-                        //    {
-                        //        one = segments[i][2].position - (Vector3)center;
-                        //        two = segments[i + 1][1].position - (Vector3)center;
-                        //        uv1 = segments[i][2].uv0;
-                        //    }
-
-                        //    var tesselation = 12;
-                        //    List<UIVertex> verts = new List<UIVertex>();
-
-                        //    var v1 = one;
-                        //    for (var iteration = 0; iteration < tesselation; iteration++)
-                        //    {
-                        //        var v2 = Vector3.RotateTowards(v1, two, Mathf.PI / tesselation, 0.1f);
-                        //        verts.AddRange(CreateTriangle(new[] { v0, center + (Vector2)v1, center + (Vector2)v2 }, new[] { uv0, uv1, uv1 }));
-                        //        v1 = v2;
-                        //    }
-                        //    vh.AddUIVertexTriangleStream(verts);
-                        //}
+                        var join = new UIVertex[] { lineSegments[i].Last()[2], lineSegments[i].Last()[3], lineSegments[i + 1].First()[0], lineSegments[i + 1].First()[1] };
+                        vh.AddUIVertexQuad(join);
                     }
                     foreach (var uiVert in lineSegments[i])
                     {
