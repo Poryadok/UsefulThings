@@ -39,23 +39,41 @@ namespace PM.UsefulThings.UI
         // there is no overlapping.
         private const float MIN_BEVEL_NICE_JOIN = 30 * Mathf.Deg2Rad;
 
-        private static readonly Vector2 UV_TOP_LEFT = Vector2.zero;
-        private static readonly Vector2 UV_BOTTOM_LEFT = new Vector2(0, 1);
+        private static readonly Vector2 UV_TOP_LEFT = new Vector2(0.2f, 0);
+        private static readonly Vector2 UV_BOTTOM_LEFT = new Vector2(0.2f, 1);
         private static readonly Vector2 UV_BOTTOM_RIGHT = new Vector2(1, 1);
         private static readonly Vector2 UV_TOP_RIGHT = new Vector2(1, 0);
 
         private static readonly Vector2[] fullUvs = new[] { UV_TOP_LEFT, UV_BOTTOM_LEFT, UV_BOTTOM_RIGHT, UV_TOP_RIGHT };
+        private static readonly Vector2[] startUvs = new[] { new Vector2(0,0), new Vector2(0, 1), UV_BOTTOM_LEFT, UV_TOP_LEFT };
 
-        public Sprite Image;
+        public Sprite Tail;
+        public Sprite Body;
 
         public bool UseColor = true;
 
-        public override Texture mainTexture => Image != null ? Image.texture : null;
+        private Texture _texture;
+
+        public override Texture mainTexture => _texture;
 
         [SerializeField]
         private Rect _UVRect = new Rect(0f, 0f, 1f, 1f);
         [SerializeField]
         private List<PriorityLine> _lines = new List<PriorityLine>();
+
+        protected override void Start()
+        {
+            base.Start();
+
+            var width = (Body != null ? Body.texture.width : 0) + (Tail != null ? Tail.texture.width : 0);
+            var height = (Body != null ? Body.texture.height : 0);
+            var texture = new Texture2D(width, height);
+
+            texture.SetPixels(0, 0, Tail.texture.width, Tail.texture.height, Tail.texture.GetPixels());
+            texture.SetPixels(Tail.texture.width, 0, Body.texture.width, Body.texture.height, Body.texture.GetPixels());
+            texture.Apply();
+            _texture = texture;
+        }
 
         [System.Serializable]
         public class PriorityLine
@@ -267,9 +285,9 @@ namespace PM.UsefulThings.UI
                     }
                 }
 
-                float tileLength = Image == null ? 1 : Image.rect.width / Image.rect.height * Mathf.Max(StartThickness, EndThickness);
+                float tileLength = Body == null ? 1 : Body.rect.width / Body.rect.height * Mathf.Max(StartThickness, EndThickness);
 
-                var uvOffset = 0f;
+                var uvOffset = 0.2f;
                 // Generate the quads that make up the wide line
                 var lineSegments = new List<List<UIVertex[]>>();
                 for (var i = 1; i < pointsToDraw.Count; i++)
@@ -297,7 +315,7 @@ namespace PM.UsefulThings.UI
                             end = start + (end - start).normalized * tileLength * (1 - uvOffset);
                             startUV = uvOffset;
                             endUV = 1f;
-                            uvOffset = 0f;
+                            uvOffset = 0.2f;
                             segmentStart = end;
                         }
                         else
@@ -314,10 +332,10 @@ namespace PM.UsefulThings.UI
                         var startthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, (pointsToDistance[i - 1] / distance)) : StartThickness;
                         var endthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, (pointsToDistance[i] / distance)) : StartThickness;
 
-                        //if (LineCaps && i == 1)
-                        //{
-                        //    segments.Add(CreateLineCap(start, end, startthickness, endthickness, SegmentType.Start, color));
-                        //}
+                        if (LineCaps && i == 1)
+                        {
+                            segments.Add(CreateLineCap(start, end, startthickness, endthickness, SegmentType.Start, color));
+                        }
 
                         segments.Add(CreateLineSegment(start, end, startthickness, endthickness, GetUVs(startUV, endUV), color));
 
@@ -385,22 +403,22 @@ namespace PM.UsefulThings.UI
             return vbo;
         }
 
-        //private UIVertex[] CreateLineCap(Vector2 start, Vector2 end, float startTickness, float endThickness, SegmentType type, Color color)
-        //{
-        //    if (type == SegmentType.Start)
-        //    {
-        //        var capStart = start - ((end - start).normalized * startTickness / 2);
-        //        return CreateLineSegment(capStart, start, startTickness, endThickness, SegmentType.Start, color);
-        //    }
-        //    else if (type == SegmentType.End)
-        //    {
-        //        var capEnd = end + ((end - start).normalized * endThickness / 2);
-        //        return CreateLineSegment(end, capEnd, startTickness, endThickness, SegmentType.End, color);
-        //    }
+        private UIVertex[] CreateLineCap(Vector2 start, Vector2 end, float startTickness, float endThickness, SegmentType type, Color color)
+        {
+            if (type == SegmentType.Start)
+            {
+                var capStart = start - ((end - start).normalized * startTickness / 5);
+                return CreateLineSegment(capStart, start, EndThickness, startTickness, startUvs, color);
+            }
+            //else if (type == SegmentType.End)
+            //{
+            //    var capEnd = end + ((end - start).normalized * endThickness / 2);
+            //    return CreateLineSegment(end, capEnd, startTickness, endThickness, SegmentType.End, color);
+            //}
 
-        //    Debug.LogError("Bad SegmentType passed in to CreateLineCap. Must be SegmentType.Start or SegmentType.End");
-        //    return null;
-        //}
+            Debug.LogError("Bad SegmentType passed in to CreateLineCap. Must be SegmentType.Start or SegmentType.End");
+            return null;
+        }
 
         private UIVertex[] CreateLineSegment(Vector2 start, Vector2 end, float startTickness, float endThickness, Vector2[] uvs, Color color)
         {
