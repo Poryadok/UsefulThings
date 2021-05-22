@@ -39,13 +39,15 @@ namespace PM.UsefulThings.UI
         // there is no overlapping.
         private const float MIN_BEVEL_NICE_JOIN = 30 * Mathf.Deg2Rad;
 
-        private static readonly Vector2 UV_TOP_LEFT = new Vector2(0.2f, 0);
-        private static readonly Vector2 UV_BOTTOM_LEFT = new Vector2(0.2f, 1);
+        private static readonly float tailUvEnd = 0.2f;
+        private static readonly float bodyUvStart = 0.2f;
+        private static readonly Vector2 UV_TOP_LEFT = new Vector2(tailUvEnd, 0);
+        private static readonly Vector2 UV_BOTTOM_LEFT = new Vector2(tailUvEnd, 1);
         private static readonly Vector2 UV_BOTTOM_RIGHT = new Vector2(1, 1);
         private static readonly Vector2 UV_TOP_RIGHT = new Vector2(1, 0);
 
         private static readonly Vector2[] fullUvs = new[] { UV_TOP_LEFT, UV_BOTTOM_LEFT, UV_BOTTOM_RIGHT, UV_TOP_RIGHT };
-        private static readonly Vector2[] startUvs = new[] { new Vector2(0,0), new Vector2(0, 1), UV_BOTTOM_LEFT, UV_TOP_LEFT };
+        private static readonly Vector2[] startUvs = new[] { new Vector2(0,0), new Vector2(0, 1), new Vector2(tailUvEnd, 1), new Vector2(tailUvEnd, 0) };
 
         public Sprite Tail;
         public Sprite Body;
@@ -68,10 +70,12 @@ namespace PM.UsefulThings.UI
             var width = (Body != null ? Body.texture.width : 0) + (Tail != null ? Tail.texture.width : 0);
             var height = (Body != null ? Body.texture.height : 0);
             var texture = new Texture2D(width, height);
+            texture.wrapMode = TextureWrapMode.Clamp;
 
             texture.SetPixels(0, 0, Tail.texture.width, Tail.texture.height, Tail.texture.GetPixels());
             texture.SetPixels(Tail.texture.width, 0, Body.texture.width, Body.texture.height, Body.texture.GetPixels());
             texture.Apply();
+
             _texture = texture;
         }
 
@@ -287,7 +291,7 @@ namespace PM.UsefulThings.UI
 
                 float tileLength = Body == null ? 1 : Body.rect.width / Body.rect.height * Mathf.Max(StartThickness, EndThickness);
 
-                var uvOffset = 0.2f;
+                var uvOffset = bodyUvStart;
                 // Generate the quads that make up the wide line
                 var lineSegments = new List<List<UIVertex[]>>();
                 for (var i = 1; i < pointsToDraw.Count; i++)
@@ -315,7 +319,7 @@ namespace PM.UsefulThings.UI
                             end = start + (end - start).normalized * tileLength * (1 - uvOffset);
                             startUV = uvOffset;
                             endUV = 1f;
-                            uvOffset = 0.2f;
+                            uvOffset = bodyUvStart;
                             segmentStart = end;
                         }
                         else
@@ -352,8 +356,11 @@ namespace PM.UsefulThings.UI
                 {
                     if (i < lineSegments.Count - 1)
                     {
-                        var vec1 = lineSegments[i].Last()[1].position - lineSegments[i].Last()[2].position;
-                        var vec2 = lineSegments[i + 1].First()[2].position - lineSegments[i + 1].First()[1].position;
+                        var leftUiVert = lineSegments[i].Last();
+                        var rightUiVert = lineSegments[i + 1].First();
+
+                        var vec1 = leftUiVert[1].position - leftUiVert[2].position;
+                        var vec2 = rightUiVert[2].position - rightUiVert[1].position;
                         var angle = Vector2.Angle(vec1, vec2) * Mathf.Deg2Rad;
 
                         // Positive sign means the line is turning in a 'clockwise' direction
@@ -361,24 +368,24 @@ namespace PM.UsefulThings.UI
 
                         // Calculate the miter point
                         var miterDistance = isCalcThickness ? StartThickness : Mathf.Lerp(0, distance, pointsToDistance[i + 1]) / (2 * Mathf.Tan(angle / 2));
-                        var miterPointA = lineSegments[i].Last()[2].position - vec1.normalized * miterDistance * sign;
-                        var miterPointB = lineSegments[i].Last()[3].position + vec1.normalized * miterDistance * sign;
+                        var miterPointA = leftUiVert[2].position - vec1.normalized * miterDistance * sign;
+                        var miterPointB = leftUiVert[3].position + vec1.normalized * miterDistance * sign;
 
                         if (miterDistance < vec1.magnitude / 2 && miterDistance < vec2.magnitude / 2 && angle > MIN_BEVEL_NICE_JOIN)
                         {
                             if (sign < 0)
                             {
-                                lineSegments[i].Last()[2].position = miterPointA;
-                                lineSegments[i + 1].First()[1].position = miterPointA;
+                                leftUiVert[2].position = miterPointA;
+                                rightUiVert[1].position = miterPointA;
                             }
                             else
                             {
-                                lineSegments[i].Last()[3].position = miterPointB;
-                                lineSegments[i + 1].First()[0].position = miterPointB;
+                                leftUiVert[3].position = miterPointB;
+                                rightUiVert[0].position = miterPointB;
                             }
                         }
 
-                        var join = new UIVertex[] { lineSegments[i].Last()[2], lineSegments[i].Last()[3], lineSegments[i + 1].First()[0], lineSegments[i + 1].First()[1] };
+                        var join = new UIVertex[] { leftUiVert[3], leftUiVert[2], rightUiVert[1], rightUiVert[0] };
                         vh.AddUIVertexQuad(join);
                     }
                     foreach (var uiVert in lineSegments[i])
