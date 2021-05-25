@@ -26,9 +26,9 @@ namespace PM.UsefulThings.Extensions
 				array[i] = array[r];
 				array[r] = tmp;
 			}
-		}
+        }
 
-		public static void MapMut<T>(this T[] array, Func<T, T> mutator)
+        public static void MapMut<T>(this T[] array, Func<T, T> mutator)
 		{
 			if (array.IsEmpty())
 			{
