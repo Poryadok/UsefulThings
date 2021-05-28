@@ -39,8 +39,8 @@ namespace PM.UsefulThings.UI
         // there is no overlapping.
         private const float MIN_BEVEL_NICE_JOIN = 30 * Mathf.Deg2Rad;
 
-        private static readonly float tailUvEnd = 0.2f;
-        private static readonly float bodyUvStart = 0.2f;
+        private static readonly float tailUvEnd = 25f/400f;
+        private static readonly float bodyUvStart = 25f / 400f;
         private static readonly Vector2 UV_TOP_LEFT = new Vector2(tailUvEnd, 0);
         private static readonly Vector2 UV_BOTTOM_LEFT = new Vector2(tailUvEnd, 1);
         private static readonly Vector2 UV_BOTTOM_RIGHT = new Vector2(1, 1);
