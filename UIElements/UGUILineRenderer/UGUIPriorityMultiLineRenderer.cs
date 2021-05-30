@@ -135,7 +135,6 @@ namespace PM.UsefulThings.UI
         public Vector2 Margin;
         public bool relativeSize;
 
-        public bool LineList = false;
         public bool LineCaps = false;
         public JoinType LineJoins = JoinType.Bevel;
 
