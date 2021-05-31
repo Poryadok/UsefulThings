@@ -85,6 +85,7 @@ namespace PM.UsefulThings.UI
             public int Priority;
             public Color Color;
             public List<Vector2> Points = new List<Vector2>();
+            public bool IsStarting = false;
             public bool IsEnding = true;
 
             public PriorityLine(int priority, Color color)
@@ -335,7 +336,7 @@ namespace PM.UsefulThings.UI
                         var startthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, (pointsToDistance[i - 1] / distance)) : StartThickness;
                         var endthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, (pointsToDistance[i] / distance)) : StartThickness;
 
-                        if (LineCaps && i == 1)
+                        if (LineCaps && line.IsStarting && i == 1)
                         {
                             segments.Add(CreateLineCap(start, end, startthickness, endthickness, SegmentType.Start, color));
                         }
