@@ -7,20 +7,20 @@ using UnityEngine;
 public class PrefsClear : Editor
 {
 
-	[MenuItem("Prefs/ClearAll")]
+	[MenuItem("UT/Prefs/ClearAll")]
 	public static void ClearAll()
 	{
 		ClearPrefs();
 		ClearSaves();
 	}
 
-	[MenuItem("Prefs/ClearPrefs")]
+	[MenuItem("UT/Prefs/ClearPrefs")]
 	public static void ClearPrefs()
 	{
 		PlayerPrefs.DeleteAll();
 	}
 
-	[MenuItem("Prefs/ClearSaves")]
+	[MenuItem("UT/Prefs/ClearSaves")]
 	public static void ClearSaves()
 	{
 		var path = Application.persistentDataPath;

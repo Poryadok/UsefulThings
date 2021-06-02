@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace PM.UsefulThings
 {
-	[CreateAssetMenu(fileName = "LocalizationLocaleGoogleIds", menuName = "Scriptoton/LocalizationLocaleGoogleIds", order = 10)]
+	//[CreateAssetMenu(fileName = "LocalizationLocaleGoogleIds", menuName = "Scriptoton/LocalizationLocaleGoogleIds", order = 10)]
 	public class LocalizationLocaleGoogleIds : ScriptableObject
 	{
 		[Serializable]

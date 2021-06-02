@@ -13,7 +13,7 @@ namespace PM.UsefulThings
 		private static Dictionary<string, IEnumerator> downloaders = new Dictionary<string, IEnumerator>();
 		private static int ticks;
 
-		[MenuItem("Tools/Localization/Download")]
+		[MenuItem("UT/Tools/Localization/Download")]
 		private static void Init()
 		{
 			var localesIds = Resources.LoadAll<LocalizationLocaleGoogleIds>("")[0];
