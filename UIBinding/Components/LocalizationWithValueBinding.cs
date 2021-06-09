@@ -31,7 +31,6 @@ namespace UIBinding.Components
 			{
 				m_inputField = GetComponent<InputField>();
 			}
-			LocalizationManager.OnLocaleChanged += OnLocalizationChanged;
 		}
 
 		private void LocalizeText()
@@ -45,6 +44,7 @@ namespace UIBinding.Components
 
 			LocalizeText();
 			OnUpdateValue();
+			LocalizationManager.OnLocaleChanged += OnLocalizationChanged;
 		}
 
 		private void OnDestroy()
