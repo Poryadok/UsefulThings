@@ -39,8 +39,8 @@ namespace PM.UsefulThings.UI
         // there is no overlapping.
         private const float MIN_BEVEL_NICE_JOIN = 30 * Mathf.Deg2Rad;
 
-        private static readonly float tailUvEnd = 25f/400f;
-        private static readonly float bodyUvStart = 25f / 400f;
+        private static readonly float tailUvEnd = 100/500f;
+        private static readonly float bodyUvStart = 100 / 500f;
         private static readonly Vector2 UV_TOP_LEFT = new Vector2(tailUvEnd, 0);
         private static readonly Vector2 UV_BOTTOM_LEFT = new Vector2(tailUvEnd, 1);
         private static readonly Vector2 UV_BOTTOM_RIGHT = new Vector2(1, 1);
@@ -414,7 +414,7 @@ namespace PM.UsefulThings.UI
         {
             if (type == SegmentType.Start)
             {
-                var capStart = start - ((end - start).normalized * startTickness / 5);
+                var capStart = start - ((end - start).normalized * startTickness / 3);
                 return CreateLineSegment(capStart, start, EndThickness, startTickness, startUvs, color);
             }
             //else if (type == SegmentType.End)
