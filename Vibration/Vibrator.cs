@@ -27,7 +27,7 @@ namespace PM.UsefulThings.Vibration
 #endif
         static Vibrator()
         {
-            _isVibrationOn = PlayerPrefs.GetInt("DisableVibration") == 1;
+            _isVibrationOn = PlayerPrefs.GetInt("DisableVibration") == 0;
 #if UNITY_ANDROID && !UNITY_EDITOR
             var unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             var unityPlayerActivity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity");
