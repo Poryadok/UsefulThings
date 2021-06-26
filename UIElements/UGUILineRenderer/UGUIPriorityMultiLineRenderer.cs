@@ -20,6 +20,7 @@ namespace PM.UsefulThings.UI
 
         public enum JoinType
         {
+            None,
             Bevel,
             Miter,
             Round
@@ -39,15 +40,15 @@ namespace PM.UsefulThings.UI
         // there is no overlapping.
         private const float MIN_BEVEL_NICE_JOIN = 30 * Mathf.Deg2Rad;
 
-        private static readonly float tailUvEnd = 100/500f;
-        private static readonly float bodyUvStart = 100 / 500f;
-        private static readonly Vector2 UV_TOP_LEFT = new Vector2(tailUvEnd, 0);
-        private static readonly Vector2 UV_BOTTOM_LEFT = new Vector2(tailUvEnd, 1);
-        private static readonly Vector2 UV_BOTTOM_RIGHT = new Vector2(1, 1);
-        private static readonly Vector2 UV_TOP_RIGHT = new Vector2(1, 0);
+        private float tailUvEnd;
+        private float bodyUvStart;
+        private Vector2 UV_TOP_LEFT;
+        private Vector2 UV_BOTTOM_LEFT;
+        private Vector2 UV_BOTTOM_RIGHT;
+        private Vector2 UV_TOP_RIGHT;
 
-        private static readonly Vector2[] fullUvs = new[] { UV_TOP_LEFT, UV_BOTTOM_LEFT, UV_BOTTOM_RIGHT, UV_TOP_RIGHT };
-        private static readonly Vector2[] startUvs = new[] { new Vector2(0,0), new Vector2(0, 1), new Vector2(tailUvEnd, 1), new Vector2(tailUvEnd, 0) };
+        private Vector2[] fullUvs;
+        private Vector2[] startUvs;
 
         public Sprite Tail;
         public Sprite Body;
@@ -70,13 +71,33 @@ namespace PM.UsefulThings.UI
             var width = (Body != null ? Body.texture.width : 0) + (Tail != null ? Tail.texture.width : 0);
             var height = (Body != null ? Body.texture.height : 0);
             var texture = new Texture2D(width, height);
+            var bodyTextureStart = Tail != null ? Tail.texture.width : 0;
             texture.wrapMode = TextureWrapMode.Clamp;
 
-            texture.SetPixels(0, 0, Tail.texture.width, Tail.texture.height, Tail.texture.GetPixels());
-            texture.SetPixels(Tail.texture.width, 0, Body.texture.width, Body.texture.height, Body.texture.GetPixels());
+            if (Tail != null)
+            {
+                texture.SetPixels(0, 0, Tail.texture.width, Tail.texture.height, Tail.texture.GetPixels());
+            }
+            texture.SetPixels(bodyTextureStart, 0, Body.texture.width, Body.texture.height, Body.texture.GetPixels());
             texture.Apply();
 
+            CalculateUvs();
+
             _texture = texture;
+        }
+
+        private void CalculateUvs()
+        {
+            var tailLength = Tail != null ? Tail.texture.width : 0;
+            tailUvEnd = (float)tailLength / (tailLength + Body.texture.width);
+            bodyUvStart = tailUvEnd;
+            UV_TOP_LEFT = new Vector2(tailUvEnd, 0);
+            UV_BOTTOM_LEFT = new Vector2(tailUvEnd, 1);
+            UV_BOTTOM_RIGHT = new Vector2(1, 1);
+            UV_TOP_RIGHT = new Vector2(1, 0);
+
+            fullUvs = new[] { UV_TOP_LEFT, UV_BOTTOM_LEFT, UV_BOTTOM_RIGHT, UV_TOP_RIGHT };
+            startUvs = new[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(tailUvEnd, 1), new Vector2(tailUvEnd, 0) };
         }
 
         [System.Serializable]
@@ -354,39 +375,42 @@ namespace PM.UsefulThings.UI
                 // Add the line segments to the vertex helper, creating any joins as needed
                 for (var i = 0; i < lineSegments.Count; i++)
                 {
-                    if (i < lineSegments.Count - 1)
+                    if (LineJoins != JoinType.None)
                     {
-                        var leftUiVert = lineSegments[i].Last();
-                        var rightUiVert = lineSegments[i + 1].First();
-
-                        var vec1 = leftUiVert[1].position - leftUiVert[2].position;
-                        var vec2 = rightUiVert[2].position - rightUiVert[1].position;
-                        var angle = Vector2.Angle(vec1, vec2) * Mathf.Deg2Rad;
-
-                        // Positive sign means the line is turning in a 'clockwise' direction
-                        var sign = Mathf.Sign(Vector3.Cross(vec1.normalized, vec2.normalized).z);
-
-                        // Calculate the miter point
-                        var miterDistance = isCalcThickness ? StartThickness : Mathf.Lerp(0, distance, pointsToDistance[i + 1]) / (2 * Mathf.Tan(angle / 2));
-                        var miterPointA = leftUiVert[2].position - vec1.normalized * miterDistance * sign;
-                        var miterPointB = leftUiVert[3].position + vec1.normalized * miterDistance * sign;
-
-                        if (miterDistance < vec1.magnitude / 2 && miterDistance < vec2.magnitude / 2 && angle > MIN_BEVEL_NICE_JOIN)
+                        if (i < lineSegments.Count - 1)
                         {
-                            if (sign < 0)
-                            {
-                                leftUiVert[2].position = miterPointA;
-                                rightUiVert[1].position = miterPointA;
-                            }
-                            else
-                            {
-                                leftUiVert[3].position = miterPointB;
-                                rightUiVert[0].position = miterPointB;
-                            }
-                        }
+                            var leftUiVert = lineSegments[i].Last();
+                            var rightUiVert = lineSegments[i + 1].First();
 
-                        var join = new UIVertex[] { leftUiVert[3], leftUiVert[2], rightUiVert[1], rightUiVert[0] };
-                        vh.AddUIVertexQuad(join);
+                            var vec1 = leftUiVert[1].position - leftUiVert[2].position;
+                            var vec2 = rightUiVert[2].position - rightUiVert[1].position;
+                            var angle = Vector2.Angle(vec1, vec2) * Mathf.Deg2Rad;
+
+                            // Positive sign means the line is turning in a 'clockwise' direction
+                            var sign = Mathf.Sign(Vector3.Cross(vec1.normalized, vec2.normalized).z);
+
+                            // Calculate the miter point
+                            var miterDistance = isCalcThickness ? StartThickness : Mathf.Lerp(0, distance, pointsToDistance[i + 1]) / (2 * Mathf.Tan(angle / 2));
+                            var miterPointA = leftUiVert[2].position - vec1.normalized * miterDistance * sign;
+                            var miterPointB = leftUiVert[3].position + vec1.normalized * miterDistance * sign;
+
+                            if (miterDistance < vec1.magnitude / 2 && miterDistance < vec2.magnitude / 2 && angle > MIN_BEVEL_NICE_JOIN)
+                            {
+                                if (sign < 0)
+                                {
+                                    leftUiVert[2].position = miterPointA;
+                                    rightUiVert[1].position = miterPointA;
+                                }
+                                else
+                                {
+                                    leftUiVert[3].position = miterPointB;
+                                    rightUiVert[0].position = miterPointB;
+                                }
+                            }
+
+                            var join = new UIVertex[] { leftUiVert[3], leftUiVert[2], rightUiVert[1], rightUiVert[0] };
+                            vh.AddUIVertexQuad(join);
+                        }
                     }
                     foreach (var uiVert in lineSegments[i])
                     {
@@ -452,7 +476,7 @@ namespace PM.UsefulThings.UI
             return vbo;
         }
 
-        private static Vector2[] GetUVs(float start, float end)
+        private Vector2[] GetUVs(float start, float end)
         {
             if (start == 0 && end == 1)
             {
