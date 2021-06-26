@@ -48,7 +48,7 @@ namespace PM.UsefulThings
 				var textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>($"{path}/{fileName}.{extension}");
 				if (textAsset == null)
 				{
-					var dir = Application.dataPath + "/CurrentProject/Resources";
+					var dir = Application.dataPath.Substring(0, Application.dataPath.Length - "assets".Length);
 					if (path != null)
 					{
 						dir += $"/{path}";
@@ -58,7 +58,7 @@ namespace PM.UsefulThings
 						Directory.CreateDirectory(dir);
 					}
 
-					System.IO.File.WriteAllText($"{dir}/{fileName}.txt", data);
+					System.IO.File.WriteAllText($"{dir}/{fileName}.{extension}", data);
 				}
 				else
 				{
