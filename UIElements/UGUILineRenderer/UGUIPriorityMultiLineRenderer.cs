@@ -67,7 +67,11 @@ namespace PM.UsefulThings.UI
         protected override void Start()
         {
             base.Start();
+            UpdateTextures();
+        }
 
+        public void UpdateTextures()
+        {
             var width = (Body != null ? Body.texture.width : 0) + (Tail != null ? Tail.texture.width : 0);
             var height = (Body != null ? Body.texture.height : 0);
             var texture = new Texture2D(width, height);
@@ -84,6 +88,7 @@ namespace PM.UsefulThings.UI
             CalculateUvs();
 
             _texture = texture;
+            SetAllDirty();
         }
 
         private void CalculateUvs()
