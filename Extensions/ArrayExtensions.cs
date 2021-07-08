@@ -355,6 +355,16 @@ namespace PM.UsefulThings.Extensions
 			return Array.Find(array, predicate);
 		}
 
+		public static int FindIndex<T>(this T[] array, Predicate<T> predicate)
+		{
+			if (array.IsEmpty())
+			{
+				return -1;
+			}
+
+			return Array.FindIndex(array, predicate);
+		}
+
 		public static T[] FindAll<T>(this T[] array, Predicate<T> predicate)
 		{
 			if (array.IsEmpty())
