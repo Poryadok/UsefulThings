@@ -7,7 +7,7 @@ namespace PM.UsefulThings
 	/// to create instance copypast this and change name
 	/// [CreateAssetMenu(fileName = "ManagerName", menuName = "Scriptoton/ManagerName", order = 10)]
 	/// </summary>
-	public class Scriptoton<T> : ScriptableObject where T : ScriptableObject
+	public class Scriptoton<T> : ScriptableObject where T : ScriptableObject, IInitializable
 	{
 		private static T _instance;
 
@@ -57,6 +57,7 @@ namespace PM.UsefulThings
 							Debug.LogError("Scriptoton can't create instance");
 							return null;
 						}
+						_instance.Init();
 					}
 
 					return _instance;
