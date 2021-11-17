@@ -333,6 +333,8 @@ namespace PM.UsefulThings.UI
                     var segments = new List<UIVertex[]>();
                     lineSegments.Add(segments);
 
+                    var drawnLength = 0f;
+
                     while (segmentStart != segmentEnd)
                     {
                         var start = segmentStart;
@@ -359,10 +361,11 @@ namespace PM.UsefulThings.UI
                         start = new Vector2(start.x * sizeX + offsetX, start.y * sizeY + offsetY);
                         end = new Vector2(end.x * sizeX + offsetX, end.y * sizeY + offsetY);
 
-                        var startthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, (pointsToDistance[i - 1] / distance)) : StartThickness;
-                        var endthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, (pointsToDistance[i] / distance)) : StartThickness;
+                        var startthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, ((pointsToDistance[i - 1] + drawnLength) / distance)) : StartThickness;
+                        drawnLength += Vector2.Distance(start, end);
+                        var endthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, ((pointsToDistance[i - 1] + drawnLength) / distance)) : StartThickness;
 
-                        if (LineCaps && line.IsStarting && i == 1)
+                        if (LineCaps && line.IsStarting && i == 1 && segments.Count == 0)
                         {
                             segments.Add(CreateLineCap(start, end, startthickness, endthickness, SegmentType.Start, color));
                         }
