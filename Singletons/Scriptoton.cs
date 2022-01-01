@@ -57,7 +57,6 @@ namespace PM.UsefulThings
 							Debug.LogError("Scriptoton can't create instance");
 							return null;
 						}
-						_instance.Init();
 					}
 
 					return _instance;
@@ -93,6 +92,7 @@ namespace PM.UsefulThings
 			{
 				_instance = this as T;
 				isInstance = true;
+				_instance.Init();
 			}
 			else if (_instance != this)
 			{
