@@ -342,6 +342,23 @@ namespace PM.UsefulThings.UI
                         float startUV;
                         float endUV;
 
+                        var startthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, ((pointsToDistance[i - 1] + drawnLength) / distance)) : StartThickness;
+
+                        if (LineCaps)
+                        {
+                            var shouldDrawCap = line.IsStarting && i == 1 && segments.Count == 0;
+
+                            if (shouldDrawCap)
+                            {
+                                segments.Add(CreateLineCap(start, end, startthickness, SegmentType.Start, color));
+                            }
+                            else if (start == pointsToDraw[i - 1] && i > 2 && Vector2.Dot((pointsToDraw[i] - pointsToDraw[i - 1]).normalized, (pointsToDraw[i - 1] - pointsToDraw[i - 2]).normalized) < -0.5f)
+                            {
+                                segments.Add(CreateLineCap(start, end, startthickness, SegmentType.Start, color));
+                                uvOffset = bodyUvStart;
+                            }
+                        }
+
                         if (Vector2.Distance(start, end) > tileLength * (1 - uvOffset))
                         {
                             end = start + (end - start).normalized * tileLength * (1 - uvOffset);
@@ -361,14 +378,8 @@ namespace PM.UsefulThings.UI
                         start = new Vector2(start.x * sizeX + offsetX, start.y * sizeY + offsetY);
                         end = new Vector2(end.x * sizeX + offsetX, end.y * sizeY + offsetY);
 
-                        var startthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, ((pointsToDistance[i - 1] + drawnLength) / distance)) : StartThickness;
                         drawnLength += Vector2.Distance(start, end);
                         var endthickness = isCalcThickness ? Mathf.Lerp(StartThickness, EndThickness, ((pointsToDistance[i - 1] + drawnLength) / distance)) : StartThickness;
-
-                        if (LineCaps && line.IsStarting && i == 1 && segments.Count == 0)
-                        {
-                            segments.Add(CreateLineCap(start, end, startthickness, endthickness, SegmentType.Start, color));
-                        }
 
                         segments.Add(CreateLineSegment(start, end, startthickness, endthickness, GetUVs(startUV, endUV), color));
 
@@ -389,6 +400,10 @@ namespace PM.UsefulThings.UI
                         {
                             var leftUiVert = lineSegments[i].Last();
                             var rightUiVert = lineSegments[i + 1].First();
+                            if (rightUiVert[0].uv0 == Vector4.zero)
+                            {
+                                rightUiVert = lineSegments[i + 1][1];
+                            }
 
                             var vec1 = leftUiVert[1].position - leftUiVert[2].position;
                             var vec2 = rightUiVert[2].position - rightUiVert[1].position;
@@ -442,7 +457,7 @@ namespace PM.UsefulThings.UI
             return vbo;
         }
 
-        private UIVertex[] CreateLineCap(Vector2 start, Vector2 end, float startTickness, float endThickness, SegmentType type, Color color)
+        private UIVertex[] CreateLineCap(Vector2 start, Vector2 end, float startTickness, SegmentType type, Color color)
         {
             if (type == SegmentType.Start)
             {
