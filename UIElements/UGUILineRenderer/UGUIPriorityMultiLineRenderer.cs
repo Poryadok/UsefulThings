@@ -231,6 +231,22 @@ namespace PM.UsefulThings.UI
                 last = line.Points[i];
             }
 
+            if (newPoints.Count == 4)
+            {
+                for (int i = 3; i < newPoints.Count; i++)
+                {
+                    if (Vector2.Dot((line.Points[i] - line.Points[i - 1]).normalized,
+                            (line.Points[i - 1] - line.Points[i - 2]).normalized) < 0.8f
+                        && Vector2.Dot((line.Points[i] - line.Points[i - 1]).normalized,
+                            (line.Points[i - 2] - line.Points[i - 3]).normalized) > -0.5f 
+                        && Vector2.Distance(line.Points[i - 1], line.Points[i - 2]) < minGap * 3)
+                    {
+                        newPoints.RemoveAt(i - 1);
+                        i--;
+                    }
+                }   
+            }
+
             newPoints.Add(line.Points.Last());
 
             line.Points = newPoints;
