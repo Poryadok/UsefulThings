@@ -1,14 +1,13 @@
 ﻿using PM.UsefulThings.Extensions;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace PM.UsefulThings
 {
 	public class Hexagrid<T> : IEnumerable<KeyValuePair<Vector3Int, T>> where T : class
 	{
-		private Dictionary<Vector3Int, T> cells = new Dictionary<Vector3Int, T>();
+		private readonly Dictionary<Vector3Int, T> cells = new Dictionary<Vector3Int, T>();
 
 		public System.Func<Vector3Int, T> HexcellConstructor { get; set; }
 
@@ -17,7 +16,7 @@ namespace PM.UsefulThings
 		{
 			get
 			{
-				//valid cell should have sum of exis == 0
+				//valid cell should have sum of axis == 0
 				if (index.x + index.y + index.z != 0)
 				{
 					throw new System.Exception("Invalid cell position requested");
@@ -33,7 +32,7 @@ namespace PM.UsefulThings
 			}
 			set
 			{
-				//valid cell should have sum of exis == 0
+				//valid cell should have sum of axis == 0
 				if (index.x + index.y + index.z != 0)
 				{
 					throw new System.Exception("Invalid cell position set");
@@ -65,7 +64,7 @@ namespace PM.UsefulThings
 
 		public List<T> GetCellsInRadius(Vector3Int center, int offset, bool isCenterIncluded = true)
 		{
-			//valid cell should have sum of exis == 0
+			//valid cell should have sum of axis == 0
 			if (center.x + center.y + center.z != 0)
 			{
 				throw new System.Exception("Invalid center position set");
@@ -81,7 +80,7 @@ namespace PM.UsefulThings
 				{
 					for (int z = -offset; z <= offset; z++)
 					{
-						//valid cell should have sum of exis == 0
+						//valid cell should have sum of axis == 0
 						if (x + y + z != 0)
 							continue;
 
@@ -98,7 +97,7 @@ namespace PM.UsefulThings
 
 		public List<T> GetExistingCellsInRadius(Vector3Int center, int offset, bool isCenterIncluded = true)
 		{
-			//valid cell should have sum of exis == 0
+			//valid cell should have sum of axis == 0
 			if (center.x + center.y + center.z != 0)
 			{
 				throw new System.Exception("Invalid center position set");
@@ -114,7 +113,7 @@ namespace PM.UsefulThings
 				{
 					for (int z = -offset; z <= offset; z++)
 					{
-						//valid cell should have sum of exis == 0
+						//valid cell should have sum of axis == 0
 						if (x + y + z != 0)
 							continue;
 
