@@ -15,6 +15,8 @@ namespace PM.UsefulThings
         public float OuterSize;
         public float InnerHeight;
         public float OuterHeight;
+        public float BevelSize;
+        public float BevelHeight;
         [SerializeField]
         private Mesh mesh;
         [SerializeField]
@@ -57,9 +59,19 @@ namespace PM.UsefulThings
         {
             faces = new List<HexCellFace>();
 
+            var effectiveOuterSize = (BevelSize > 0 && BevelHeight > 0) ? OuterSize / 2 - BevelSize : OuterSize / 2;
+            var effectiveOuterHeight = (BevelSize > 0 && BevelHeight > 0) ? OuterHeight - BevelHeight : OuterHeight;
+                
             for (int point = 0; point < 6; point++)
             {
-                faces.Add(CreateFace(InnerSize / 2, OuterSize / 2, InnerHeight, OuterHeight, point));
+                faces.Add(CreateFace(InnerSize / 2, effectiveOuterSize, InnerHeight, OuterHeight, point));
+                if (BevelSize > 0 && BevelHeight > 0)
+                    faces.Add(CreateFace(effectiveOuterSize, OuterSize / 2, OuterHeight, effectiveOuterHeight, point));
+                
+                faces.Add(CreateFace(InnerSize / 2, OuterSize / 2, 0, 0, point, true));
+                
+                faces.Add(CreateFace(OuterSize / 2, OuterSize / 2, 0, effectiveOuterHeight, point, true));
+                faces.Add(CreateFace(InnerSize / 2, InnerSize / 2, 0, InnerHeight, point));
             }
         }
 
@@ -107,6 +119,7 @@ namespace PM.UsefulThings
                 }
             }
 
+            mesh.Clear();
             mesh.vertices = verticies.ToArray();
             mesh.triangles = triangles.ToArray();
             mesh.uv = uvs.ToArray();

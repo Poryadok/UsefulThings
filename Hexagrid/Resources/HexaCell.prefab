@@ -97,8 +97,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InnerSize: 0
   OuterSize: 1
-  InnerHeight: 1
-  OuterHeight: 1
+  InnerHeight: 0.2
+  OuterHeight: 0.2
+  BevelSize: 0.03
+  BevelHeight: 0.01
   mesh: {fileID: 0}
   meshFilter: {fileID: 8185926121777451187}
   meshRenderer: {fileID: 3839614204395049239}
