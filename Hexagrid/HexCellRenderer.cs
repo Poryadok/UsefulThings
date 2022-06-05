@@ -17,6 +17,7 @@ namespace PM.UsefulThings
         public float OuterHeight;
         public float BevelSize;
         public float BevelHeight;
+        public bool IsHorizontalAlignment;
         [SerializeField]
         private Mesh mesh;
         [SerializeField]
@@ -44,10 +45,10 @@ namespace PM.UsefulThings
             DrawMesh();
         }
 
-        private void OnValidate()
-        {
-            DrawMesh();
-        }
+        // private void OnValidate()
+        // {
+        //     DrawMesh();
+        // }
 
         public void DrawMesh()
         {
@@ -97,7 +98,7 @@ namespace PM.UsefulThings
 
         private Vector3 GetPoint(float size, float height, int index)
         {
-            float angle = (index * 60) * Mathf.Deg2Rad;
+            float angle = ((IsHorizontalAlignment ? 0 : 30) + index * 60) * Mathf.Deg2Rad;
             return new Vector3(size * Mathf.Cos(angle), height, size * Mathf.Sin(angle));
         }
 

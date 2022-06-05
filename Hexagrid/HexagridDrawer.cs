@@ -11,12 +11,11 @@ namespace PM.UsefulThings
         public int Radius;
         public HexCellRenderer CellPrefab;
 
-        private Hexagrid<HexCellRenderer> field = new Hexagrid<HexCellRenderer>();
+        private Hexagrid<HexCellRenderer> field;
 
         private HexCellRenderer CreateCell(Vector3Int gridPos)
         {
-            var sqrRoot3 = Mathf.Sqrt(3) / 4;
-            var position = new Vector3(gridPos.x * CellPrefab.OuterSize * 1.5f / 2, 0, (gridPos.y - gridPos.z)  * CellPrefab.OuterSize * sqrRoot3);
+            var position = field.ConvertHexToUnityPosition(gridPos);
             
             HexCellRenderer cell = Instantiate(CellPrefab, position, Quaternion.identity, this.transform);
             cell.gameObject.name = gridPos.ToString();
@@ -25,7 +24,7 @@ namespace PM.UsefulThings
         
         private void Start()
         {
-            field.HexcellConstructor = CreateCell;
+            field = new Hexagrid<HexCellRenderer>(CreateCell, CellPrefab.OuterSize, false);
             field.GetCellsInRadius(Vector3Int.zero, Radius);
         }
     }

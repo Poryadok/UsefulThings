@@ -11,6 +11,16 @@ namespace PM.UsefulThings
 
 		public System.Func<Vector3Int, T> HexcellConstructor { get; set; }
 
+		public float CellSize;
+		public bool IsHorizontalAlignment;
+
+		public Hexagrid(System.Func<Vector3Int, T> hexcellConstructor, float cellSize, bool isHorizontalAlignment)
+		{
+			this.HexcellConstructor = hexcellConstructor;
+			this.CellSize = cellSize;
+			this.IsHorizontalAlignment = isHorizontalAlignment;
+		}
+
 		[System.Runtime.CompilerServices.IndexerName("Position")]
 		public T this[Vector3Int index]
 		{
@@ -167,6 +177,62 @@ namespace PM.UsefulThings
 		public void Clear()
 		{
 			cells.Clear();
+		}
+
+		public Vector3Int ConvertUnityToHexPosition(Vector3 worldPos)
+		{
+			return CubeRound(ConvertUnityToHexWorldPosition(worldPos));
+		}
+
+		public Vector3 ConvertHexToUnityPosition(Vector3Int hexPosition)
+		{
+			return ConvertHexToUnityPosition(hexPosition.x, hexPosition.y, hexPosition.z);
+		}
+
+		public Vector3 ConvertHexWorldToUnityPosition(Vector3 hexPosition)
+		{
+			return ConvertHexToUnityPosition(hexPosition.x, hexPosition.y, hexPosition.z);
+		}
+
+		private Vector3 ConvertHexToUnityPosition(float hexPositionX,float hexPositionY,float hexPositionZ)
+		{
+			if (IsHorizontalAlignment)
+			{
+				return new Vector3(hexPositionX * CellSize * 1.5f / 2, 0,
+					(hexPositionY - hexPositionZ) * CellSize * Mathf.Sqrt(3) / 4);
+			}
+			else
+			{
+				return new Vector3((hexPositionY - hexPositionZ) * CellSize * Mathf.Sqrt(3) / 4, 0,
+					hexPositionX * CellSize * 1.5f / 2);
+			}
+		}
+
+		public Vector3 ConvertUnityToHexWorldPosition(Vector3 worldPos)
+		{
+			var q = (Mathf.Sqrt(3) / 3 * worldPos.x - 1f / 3 * worldPos.z) / CellSize;
+			var r = 2f / 3 * worldPos.z / CellSize;
+			return new Vector3(q, r, -q - r);
+		}
+
+		private Vector3Int CubeRound(Vector3 frac)
+		{
+			var q = Mathf.RoundToInt(frac.x);
+			var r = Mathf.RoundToInt(frac.y);
+			var s = Mathf.RoundToInt(frac.z);
+
+			var q_diff = Mathf.Abs(q - frac.x);
+			var r_diff = Mathf.Abs(r - frac.y);
+			var s_diff = Mathf.Abs(s - frac.z);
+
+			if (q_diff > r_diff && q_diff > s_diff)
+				q = -r - s;
+			else if (r_diff > s_diff)
+				r = -q - s;
+			else
+				s = -q - r;
+
+			return new Vector3Int(q, r, s);
 		}
 	}
 }
