@@ -88,14 +88,10 @@ namespace PM.UsefulThings
 			{
 				for (int y = -offset; y <= offset; y++)
 				{
-					for (int z = -offset; z <= offset; z++)
-					{
-						//valid cell should have sum of axis == 0
-						if (x + y + z != 0)
-							continue;
-
-						result.Add(this[center + new Vector3Int(x, y, z)]);
-					}
+					if (Mathf.Abs(x + y) > offset)
+						continue;
+					
+					result.Add(this[center + new Vector3Int(x, y, -x -y)]);
 				}
 			}
 
@@ -198,13 +194,13 @@ namespace PM.UsefulThings
 		{
 			if (IsHorizontalAlignment)
 			{
-				return new Vector3(hexPositionX * CellSize * 1.5f / 2, 0,
-					(hexPositionY - hexPositionZ) * CellSize * Mathf.Sqrt(3) / 4);
+				return new Vector3(hexPositionY * CellSize * 1.5f / 2, 0,
+					(hexPositionX - hexPositionZ) * CellSize * Mathf.Sqrt(3) / 4);
 			}
 			else
 			{
-				return new Vector3((hexPositionY - hexPositionZ) * CellSize * Mathf.Sqrt(3) / 4, 0,
-					hexPositionX * CellSize * 1.5f / 2);
+				return new Vector3((hexPositionX - hexPositionZ) * CellSize * Mathf.Sqrt(3) / 4, 0,
+					hexPositionY * CellSize * 1.5f / 2);
 			}
 		}
 
@@ -212,7 +208,7 @@ namespace PM.UsefulThings
 		{
 			var q = (Mathf.Sqrt(3) / 3 * worldPos.x - 1f / 3 * worldPos.z) / CellSize;
 			var r = 2f / 3 * worldPos.z / CellSize;
-			return new Vector3(q, r, -q - r);
+			return new Vector3(r, q, -q - r);
 		}
 
 		private Vector3Int CubeRound(Vector3 frac)
@@ -288,7 +284,7 @@ namespace PM.UsefulThings
 
 		public static int CellCountInRadius(int radius)
 		{
-			return 1 + (radius - 1) * 6;
+			return (int)(1 + (1 + radius) * radius / 2f * 6);
 		}
 	}
 }
