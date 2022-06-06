@@ -19,6 +19,7 @@ namespace PM.UsefulThings
             
             HexCellRenderer cell = Instantiate(CellPrefab, position, Quaternion.identity, this.transform);
             cell.gameObject.name = gridPos.ToString();
+            cell.SetPosition(gridPos);
             return cell;
         }
         

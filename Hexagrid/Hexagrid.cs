@@ -235,4 +235,60 @@ namespace PM.UsefulThings
 			return new Vector3Int(q, r, s);
 		}
 	}
+
+	public static class MathHex
+	{
+		public static Vector3Int RandomInRadius(int radius)
+		{
+			var min = -radius;
+			var max = radius + 1;
+			int x = Random.Range(min, max);
+			if (x > 0)
+			{
+				max -= x;
+			}
+			else
+			{
+				min -= x;
+			}
+
+			int y = Random.Range(min, max);
+			int z = -x - y;
+			return new Vector3Int(x, y, z);
+		}
+		
+		public static Vector3Int RandomOnCircle(int radius)
+		{
+			var min = -radius;
+			var max = radius + 1;
+			int x = Random.Range(min, max);
+			if (x > 0)
+			{
+				max -= x;
+			}
+			else
+			{
+				min -= x;
+			}
+
+			int y = Random.value > 0.5f ? max - 1 : min;
+			int z = -x - y;
+
+			int normalizeRandom = Random.Range(0, 3);
+			switch (normalizeRandom)
+			{
+				case 0:
+					return new Vector3Int(x, y, z);
+				case 1:
+					return new Vector3Int(z, x, y);
+				default:
+					return new Vector3Int(y, z, x);
+			}
+		}
+
+		public static int CellCountInRadius(int radius)
+		{
+			return 1 + (radius - 1) * 6;
+		}
+	}
 }

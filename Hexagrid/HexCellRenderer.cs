@@ -3,14 +3,18 @@ using PM.UsefulThings.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UIBinding;
+using UIBinding.Base;
 
 namespace PM.UsefulThings
 {
     [RequireComponent(typeof(MeshFilter))]
     [RequireComponent(typeof(MeshRenderer))]
     [ExecuteInEditMode]
-    public class HexCellRenderer : MonoBehaviour
+    public class HexCellRenderer : BaseBindingBehaviourTarget
     {
+        [SerializeField] private StringProperty pos = new StringProperty();
+        
         public float InnerSize;
         public float OuterSize;
         public float InnerHeight;
@@ -38,6 +42,11 @@ namespace PM.UsefulThings
 
             meshFilter.mesh = mesh;
             meshRenderer.material = Material;
+        }
+
+        public void SetPosition(Vector3Int position)
+        {
+            this.pos.value = $"{position.x}, {position.y}, {position.z}";
         }
 
         private void OnEnable()
