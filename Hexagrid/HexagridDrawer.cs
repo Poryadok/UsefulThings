@@ -17,7 +17,7 @@ namespace PM.UsefulThings
         {
             var position = field.ConvertHexToUnityPosition(gridPos);
             
-            HexCellRenderer cell = Instantiate(CellPrefab, position, Quaternion.identity, this.transform);
+            HexCellRenderer cell = Instantiate(CellPrefab, position + this.transform.position, Quaternion.identity, this.transform);
             cell.gameObject.name = gridPos.ToString();
             cell.SetPosition(gridPos);
             return cell;

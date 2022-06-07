@@ -68,20 +68,22 @@ namespace PM.UsefulThings
         private void DrawFaces()
         {
             faces = new List<HexCellFace>();
+            var scaledInnerSize = InnerSize / Mathf.Sqrt(3) * 2;
+            var scaledOuterSize = OuterSize / Mathf.Sqrt(3) * 2;
 
-            var effectiveOuterSize = (BevelSize > 0 && BevelHeight > 0) ? OuterSize / 2 - BevelSize : OuterSize / 2;
+            var effectiveOuterSize = (BevelSize > 0 && BevelHeight > 0) ? scaledOuterSize / 2 - BevelSize : scaledOuterSize / 2;
             var effectiveOuterHeight = (BevelSize > 0 && BevelHeight > 0) ? OuterHeight - BevelHeight : OuterHeight;
                 
             for (int point = 0; point < 6; point++)
             {
-                faces.Add(CreateFace(InnerSize / 2, effectiveOuterSize, InnerHeight, OuterHeight, point));
+                faces.Add(CreateFace(scaledInnerSize / 2, effectiveOuterSize, InnerHeight, OuterHeight, point));
                 if (BevelSize > 0 && BevelHeight > 0)
-                    faces.Add(CreateFace(effectiveOuterSize, OuterSize / 2, OuterHeight, effectiveOuterHeight, point));
+                    faces.Add(CreateFace(effectiveOuterSize, scaledOuterSize / 2, OuterHeight, effectiveOuterHeight, point));
                 
-                faces.Add(CreateFace(InnerSize / 2, OuterSize / 2, 0, 0, point, true));
+                faces.Add(CreateFace(scaledInnerSize / 2, scaledOuterSize / 2, 0, 0, point, true));
                 
-                faces.Add(CreateFace(OuterSize / 2, OuterSize / 2, 0, effectiveOuterHeight, point, true));
-                faces.Add(CreateFace(InnerSize / 2, InnerSize / 2, 0, InnerHeight, point));
+                faces.Add(CreateFace(scaledOuterSize / 2, scaledOuterSize / 2, 0, effectiveOuterHeight, point, true));
+                faces.Add(CreateFace(scaledInnerSize / 2, scaledInnerSize / 2, 0, InnerHeight, point));
             }
         }
 

@@ -190,41 +190,41 @@ namespace PM.UsefulThings
 		{
 			if (IsHorizontalAlignment)
 			{
-				return new Vector3(hexPositionY * CellSize * 1.5f / 2, 0,
-					(hexPositionX - hexPositionZ) * CellSize * Mathf.Sqrt(3) / 4);
+				return new Vector3(( Mathf.Sqrt(3)/2f * hexPositionY + hexPositionX) * CellSize, 0,
+					hexPositionY * CellSize * 1 / 2);
 			}
 			else
 			{
-				return new Vector3((hexPositionX - hexPositionZ) * CellSize * Mathf.Sqrt(3) / 4, 0,
-					hexPositionY * CellSize * 1.5f / 2);
+				return new Vector3((1/2f * hexPositionY + hexPositionX) * CellSize, 0,
+					hexPositionY * CellSize * Mathf.Sqrt(3) / 2);
 			}
 		}
 
 		public Vector3 ConvertUnityToHexWorldPosition(Vector3 worldPos)
 		{
-			var q = (Mathf.Sqrt(3) / 3 * worldPos.x - 1f / 3 * worldPos.z) / CellSize;
-			var r = 2f / 3 * worldPos.z / CellSize;
-			return new Vector3(r, q, -q - r);
+			var g = 2 / Mathf.Sqrt(3) * worldPos.z / CellSize;
+			var r = (worldPos.x - worldPos.z / Mathf.Sqrt(3)) / CellSize;
+			return new Vector3(r, g, -g - r);
 		}
 
 		private Vector3Int CubeRound(Vector3 frac)
 		{
-			var q = Mathf.RoundToInt(frac.x);
-			var r = Mathf.RoundToInt(frac.y);
-			var s = Mathf.RoundToInt(frac.z);
+			var r = Mathf.RoundToInt(frac.x);
+			var g = Mathf.RoundToInt(frac.y);
+			var b = Mathf.RoundToInt(frac.z);
 
-			var q_diff = Mathf.Abs(q - frac.x);
-			var r_diff = Mathf.Abs(r - frac.y);
-			var s_diff = Mathf.Abs(s - frac.z);
+			var r_diff = Mathf.Abs(r - frac.x);
+			var g_diff = Mathf.Abs(g - frac.y);
+			var b_diff = Mathf.Abs(b - frac.z);
 
-			if (q_diff > r_diff && q_diff > s_diff)
-				q = -r - s;
-			else if (r_diff > s_diff)
-				r = -q - s;
+			if (r_diff > g_diff && r_diff > b_diff)
+				r = -g - b;
+			else if (g_diff > b_diff)
+				g = -r - b;
 			else
-				s = -q - r;
+				b = -r - g;
 
-			return new Vector3Int(r, q, s);
+			return new Vector3Int(r, g, b);
 		}
 	}
 
