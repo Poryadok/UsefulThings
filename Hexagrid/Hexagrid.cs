@@ -80,7 +80,7 @@ namespace PM.UsefulThings
 				throw new System.Exception("Invalid center position set");
 			}
 
-			offset = Mathf.Abs(offset);
+			offset = Mathf.Abs(offset - 1);
 
 			var result = new List<T>();
 
@@ -109,7 +109,7 @@ namespace PM.UsefulThings
 				throw new System.Exception("Invalid center position set");
 			}
 
-			offset = Mathf.Abs(offset);
+			offset = Mathf.Abs(offset) - 1;
 
 			var result = new List<T>();
 
@@ -117,16 +117,12 @@ namespace PM.UsefulThings
 			{
 				for (int y = -offset; y <= offset; y++)
 				{
-					for (int z = -offset; z <= offset; z++)
+					if (Mathf.Abs(x + y) > offset)
+						continue;
+					
+					if (IsCellCreated(center + new Vector3Int(x, y, -x-y)))
 					{
-						//valid cell should have sum of axis == 0
-						if (x + y + z != 0)
-							continue;
-
-						if (IsCellCreated(center + new Vector3Int(x, y, z)))
-						{
-							result.Add(this[center + new Vector3Int(x, y, z)]);
-						}
+						result.Add(this[center + new Vector3Int(x, y, -x-y)]);
 					}
 				}
 			}
@@ -228,7 +224,7 @@ namespace PM.UsefulThings
 			else
 				s = -q - r;
 
-			return new Vector3Int(q, r, s);
+			return new Vector3Int(r, q, s);
 		}
 	}
 
@@ -236,8 +232,8 @@ namespace PM.UsefulThings
 	{
 		public static Vector3Int RandomInRadius(int radius)
 		{
-			var min = -radius;
-			var max = radius + 1;
+			var min = -radius + 1;
+			var max = radius;
 			int x = Random.Range(min, max);
 			if (x > 0)
 			{
@@ -255,8 +251,8 @@ namespace PM.UsefulThings
 		
 		public static Vector3Int RandomOnCircle(int radius)
 		{
-			var min = -radius;
-			var max = radius + 1;
+			var min = -radius + 1;
+			var max = radius;
 			int x = Random.Range(min, max);
 			if (x > 0)
 			{
@@ -284,7 +280,18 @@ namespace PM.UsefulThings
 
 		public static int CellCountInRadius(int radius)
 		{
+			radius -= 1;
 			return (int)(1 + (1 + radius) * radius / 2f * 6);
+		}
+
+		public static int Distance(Vector3Int one, Vector3Int another)
+		{
+			return Mathf.Max(Mathf.Abs(one.x - another.x), Mathf.Abs(one.y - another.y));
+		}
+
+		public static float Distance(Vector3 one, Vector3 another)
+		{
+			return Mathf.Max(Mathf.Abs(one.x - another.x), Mathf.Abs(one.y - another.y));
 		}
 	}
 }
