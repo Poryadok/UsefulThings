@@ -80,7 +80,8 @@ namespace PM.UsefulThings
 				throw new System.Exception("Invalid center position set");
 			}
 
-			offset = Mathf.Abs(offset - 1);
+			if (offset > 0)
+				offset = Mathf.Abs(offset - 1);
 
 			var result = new List<T>();
 
@@ -225,73 +226,6 @@ namespace PM.UsefulThings
 				b = -r - g;
 
 			return new Vector3Int(r, g, b);
-		}
-	}
-
-	public static class MathHex
-	{
-		public static Vector3Int RandomInRadius(int radius)
-		{
-			var min = -radius + 1;
-			var max = radius;
-			int x = Random.Range(min, max);
-			if (x > 0)
-			{
-				max -= x;
-			}
-			else
-			{
-				min -= x;
-			}
-
-			int y = Random.Range(min, max);
-			int z = -x - y;
-			return new Vector3Int(x, y, z);
-		}
-		
-		public static Vector3Int RandomOnCircle(int radius)
-		{
-			var min = -radius + 1;
-			var max = radius;
-			int x = Random.Range(min, max);
-			if (x > 0)
-			{
-				max -= x;
-			}
-			else
-			{
-				min -= x;
-			}
-
-			int y = Random.value > 0.5f ? max - 1 : min;
-			int z = -x - y;
-
-			int normalizeRandom = Random.Range(0, 3);
-			switch (normalizeRandom)
-			{
-				case 0:
-					return new Vector3Int(x, y, z);
-				case 1:
-					return new Vector3Int(z, x, y);
-				default:
-					return new Vector3Int(y, z, x);
-			}
-		}
-
-		public static int CellCountInRadius(int radius)
-		{
-			radius -= 1;
-			return (int)(1 + (1 + radius) * radius / 2f * 6);
-		}
-
-		public static int Distance(Vector3Int one, Vector3Int another)
-		{
-			return Mathf.Max(Mathf.Abs(one.x - another.x), Mathf.Abs(one.y - another.y));
-		}
-
-		public static float Distance(Vector3 one, Vector3 another)
-		{
-			return Mathf.Max(Mathf.Abs(one.x - another.x), Mathf.Abs(one.y - another.y));
 		}
 	}
 }
