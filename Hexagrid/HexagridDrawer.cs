@@ -27,6 +27,10 @@ namespace PM.UsefulThings
         {
             field = new Hexagrid<HexCellRenderer>(CreateCell, CellPrefab.OuterSize, false);
             field.GetCellsInRadius(Vector3Int.zero, Radius);
+            foreach (var cell in field.Cells)
+            {
+                cell.GetComponent<HexCellRenderer>().SetColor(new Color(0.2f, 1f,0.2f, 1f));
+            }
         }
     }
 }

@@ -71,13 +71,13 @@ namespace PM.UsefulThings
             var scaledInnerSize = InnerSize / Mathf.Sqrt(3) * 2;
             var scaledOuterSize = OuterSize / Mathf.Sqrt(3) * 2;
 
-            var effectiveOuterSize = (BevelSize > 0 && BevelHeight > 0) ? scaledOuterSize / 2 - BevelSize : scaledOuterSize / 2;
-            var effectiveOuterHeight = (BevelSize > 0 && BevelHeight > 0) ? OuterHeight - BevelHeight : OuterHeight;
+            var effectiveOuterSize = (BevelSize != 0 && BevelHeight != 0) ? scaledOuterSize / 2 - BevelSize : scaledOuterSize / 2;
+            var effectiveOuterHeight = (BevelSize != 0 && BevelHeight != 0) ? OuterHeight - BevelHeight : OuterHeight;
                 
             for (int point = 0; point < 6; point++)
             {
                 faces.Add(CreateFace(scaledInnerSize / 2, effectiveOuterSize, InnerHeight, OuterHeight, point));
-                if (BevelSize > 0 && BevelHeight > 0)
+                if (BevelSize != 0 && BevelHeight != 0)
                     faces.Add(CreateFace(effectiveOuterSize, scaledOuterSize / 2, OuterHeight, effectiveOuterHeight, point));
                 
                 faces.Add(CreateFace(scaledInnerSize / 2, scaledOuterSize / 2, 0, 0, point, true));
@@ -136,6 +136,15 @@ namespace PM.UsefulThings
             mesh.triangles = triangles.ToArray();
             mesh.uv = uvs.ToArray();
             mesh.RecalculateNormals();
+        }
+
+        public void SetColor(Color color)
+        {
+            mesh.colors = new Color[mesh.vertices.Length];
+            for (int i = 0; i < mesh.colors.Length; i++)
+            {
+                mesh.colors[i] = color;
+            }
         }
     }
 }
