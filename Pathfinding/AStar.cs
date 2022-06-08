@@ -87,7 +87,6 @@ namespace PM.UsefulThings.Pathfinding
 					path.Add(cameFrom[last]);
 					last = cameFrom[last];
 				}
-
 				path.Reverse();
 			}
 
@@ -103,7 +102,7 @@ namespace PM.UsefulThings.Pathfinding
 
 	public interface IPathNode : IGenericPriorityQueueNode<int>
 	{
-		Vector2Int FieldPosition { get; }
+		Vector3Int FieldPosition { get; }
 		bool IsWalkable { get; }
 
 		List<IPathNode> GetNeighbours();
