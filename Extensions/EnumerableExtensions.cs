@@ -542,6 +542,18 @@ namespace PM.UsefulThings.Extensions
 			return result;
 		}
 
+		public static List<T> Cast<T>(this IEnumerable collection)
+		{
+			var result = new List<T>();
+
+			foreach (var item in collection)
+			{
+				result.Add((T)item);
+			}
+
+			return result;
+		}
+
 		public static List<R> Cast<T, R>(this IEnumerable<T> collection, System.Func<T, R> convertFunc)
 		{
 			var result = new List<R>();
