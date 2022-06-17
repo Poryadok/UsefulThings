@@ -72,6 +72,39 @@ namespace PM.UsefulThings
 			return cells.ContainsKey(pos);
 		}
 
+		public T FindClosestCell(Vector3Int center, int offset, System.Predicate<T> predicate)
+		{
+			//valid cell should have sum of axis == 0
+			if (center.x + center.y + center.z != 0)
+			{
+				throw new System.Exception("Invalid center position set");
+			}
+
+			if (offset == 0)
+			{
+				Debug.LogError("What the point of this search?");
+			}
+			
+			for (int i = 1; i < offset; i++)
+			{
+				for (int x = -offset; x <= offset; x++)
+				{
+					for (int y = -offset; y <= offset; y++)
+					{
+						if (Mathf.Abs(x + y) > offset)
+							continue;
+					
+						if (predicate(this[center + new Vector3Int(x, y, -x -y)]))
+						{
+							return this[center + new Vector3Int(x, y, -x - y)];
+						}
+					}
+				}
+			}
+
+			return null;
+		}
+
 		public List<T> GetCellsInRadius(Vector3Int center, int offset, bool isCenterIncluded = true)
 		{
 			//valid cell should have sum of axis == 0
