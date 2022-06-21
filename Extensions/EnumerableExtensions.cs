@@ -88,6 +88,24 @@ namespace PM.UsefulThings.Extensions
 			return default(T);
 		}
 
+		public static List<T> FindAllWithCast<T>(this ICollection collection, Predicate<T> predicate) where T : class
+		{
+			var result = new List<T>();
+			if (collection.IsEmpty())
+			{
+				return result;
+			}
+
+			foreach (var item in collection)
+			{
+				if (item is T castedItem && predicate(castedItem))
+				{
+					result.Add(castedItem);
+				}
+			}
+			return result;
+		}
+
 		public static KeyValuePair<T, U> Find<T, U>(this IDictionary<T, U> collection, Predicate<KeyValuePair<T, U>> predicate)
 		{
 			if (collection.IsEmpty())
