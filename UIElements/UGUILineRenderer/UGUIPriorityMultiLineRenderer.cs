@@ -416,7 +416,7 @@ namespace PM.UsefulThings.UI
                         {
                             var leftUiVert = lineSegments[i].Last();
                             var rightUiVert = lineSegments[i + 1].First();
-                            if (rightUiVert[0].uv0 == Vector4.zero)
+                            if (rightUiVert[0].uv0 == Vector2.zero)
                             {
                                 rightUiVert = lineSegments[i + 1][1];
                             }

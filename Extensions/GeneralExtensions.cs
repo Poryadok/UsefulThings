@@ -216,6 +216,19 @@ namespace PM.UsefulThings.Extensions
 			return false;
 		}
 
+		public static bool All<T>(this IEnumerable<T> collection, Func<T, bool> func)
+		{
+			if (func == null)
+				throw new ArgumentNullException("func");
+
+			foreach (T elem in collection)
+			{
+				if (!func(elem))
+					return false;
+			}
+			return true;
+		}
+
 
 		public static T AddAndReturn<T>(this ICollection<T> collection, T item)
 		{

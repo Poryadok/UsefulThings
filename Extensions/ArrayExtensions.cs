@@ -345,6 +345,24 @@ namespace PM.UsefulThings.Extensions
 			return array[0];
 		}
 
+		public static T FindLast<T>(this T[] array, Predicate<T> predicate)
+		{
+			if (array.IsEmpty())
+			{
+				return default(T);
+			}
+
+			for (int i = array.Length - 1; i >= 0; i--)
+			{
+				if (predicate(array[i]))
+				{
+					return array[i];
+				}
+			}
+
+			return default(T);
+		}
+
 		public static T Find<T>(this T[] array, Predicate<T> predicate)
 		{
 			if (array.IsEmpty())
