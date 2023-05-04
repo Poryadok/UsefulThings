@@ -18,7 +18,25 @@ namespace PM.UsefulThings.Editor
 		{
 			var status = EditorPrefs.GetInt("kAutoRefresh");
 
-			Menu.SetChecked("Sklapps/Editor/Auto Refresh", status == 1);
+			Menu.SetChecked("UT/Editor/Auto Refresh", status == 1);
+
+			return true;
+		}
+		
+		[MenuItem("UT/Editor/Lock Reload")]
+		private static void LockReloadToggle()
+		{
+			var status = EditorPrefs.GetInt("lockReload");
+
+			EditorPrefs.SetInt("lockReload",status == 1 ? 0 : 1);
+		}
+
+		[MenuItem("UT/Editor/Lock Reload", true)]
+		private static bool LockReloadToggleValidation()
+		{
+			var status = EditorPrefs.GetInt("lockReload");
+
+			Menu.SetChecked("UT/Editor/Lock Reload", status == 1);
 
 			return true;
 		}
@@ -38,11 +56,16 @@ namespace PM.UsefulThings.Editor
 		[InitializeOnLoadMethod]
 		private static void Initialize()
 		{
-			Debug.Log("Script realoded!");
-
 			AssetDatabase.SaveAssets();
 
-			EditorApplication.LockReloadAssemblies();
+			var status = EditorPrefs.GetInt("lockReload");
+
+			if (status == 1)
+			{
+				Debug.Log("Script reloaded! Assembly reload locked!");
+
+				EditorApplication.LockReloadAssemblies();
+			}
 		}
 	}
 }
