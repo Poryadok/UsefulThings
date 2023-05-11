@@ -8,13 +8,13 @@ using UnityEngine.UI;
 namespace PM.UsefulThings
 {
 	[DisallowMultipleComponent]
-	public class AbPanel : BaseBindingBehaviourTarget, IWindowUT
+	public abstract class AbPanel : BaseBindingBehaviourTarget, IWindowUT
 	{
 		public virtual bool IsSolid
 		{
 			get
 			{
-				return false;
+				return true;
 			}
 		}
 
