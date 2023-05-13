@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace PM.UsefulThings
 {
@@ -96,22 +98,22 @@ namespace PM.UsefulThings
 			}
 		}
 
-		public T AddNewFrame<T>(WindowCloseModes mode = WindowCloseModes.CloseNonSolid) where T : MonoBehaviour
+		public async Task<T> AddNewFrame<T>(WindowCloseModes mode = WindowCloseModes.CloseNonSolid) where T : MonoBehaviour
 		{
 			foreach (var window in WindowsHolder.Windows)
 			{
-				if (window.GetType() == typeof(T))
+				if (window.AssetGUID == typeof(T).Name)
 				{
-					return AddNewFrame(window as IWindowUT, mode) as T;
+					return await AddNewFrame(window, mode) as T;
 				}
 			}
 			Debug.LogError("There is no window prefab with class " + typeof(T).ToString());
 			return null;
 		}
 
-		public IWindowUT AddNewFrame(IWindowUT prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid)
+		public async Task<IWindowUT> AddNewFrame(AssetReference prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid)
 		{
-			var newFrame = CreateWindow(AuxiliaryRoot, prefab, mode);
+			var newFrame = await CreateWindow(AuxiliaryRoot, prefab, mode);
 
 			frames.Push(newFrame);
 			allWindows.Add(newFrame);
@@ -122,23 +124,23 @@ namespace PM.UsefulThings
 			return newFrame;
 		}
 
-		public T OpenNewPanel<T>(WindowCloseModes mode = WindowCloseModes.CloseNonSolid) where T : MonoBehaviour
+		public async Task<T> OpenNewPanel<T>(WindowCloseModes mode = WindowCloseModes.CloseNonSolid) where T : MonoBehaviour
 		{
 			foreach (var window in WindowsHolder.Windows)
 			{
-				if (window.GetType() == typeof(T))
+				if (window.AssetGUID == typeof(T).Name)
 				{
-					return OpenNewPanel(window as IWindowUT, mode) as T;
+					return await OpenNewPanel(window, mode) as T;
 				}
 			}
 			Debug.LogError("There is no window prefab with class " + typeof(T).ToString());
 			return null;
 		}
 
-		public IWindowUT OpenNewPanel(IWindowUT prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid)
+		public async Task<IWindowUT> OpenNewPanel(AssetReference prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid)
 		{
-			var newPanel = CreateWindow(MainRoot, prefab, mode);
-
+			var newPanel = await CreateWindow(MainRoot, prefab, mode);
+			
 			panels.Push(newPanel);
 			allWindows.Add(newPanel);
 			Listen(newPanel);
@@ -148,7 +150,7 @@ namespace PM.UsefulThings
 			return newPanel;
 		}
 
-		private IWindowUT CreateWindow(Transform parent, IWindowUT prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid, bool isPanel = true)
+		private async Task<IWindowUT> CreateWindow(Transform parent, AssetReference prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid, bool isPanel = true)
 		{
 			if (isPanel)
 			{
@@ -165,7 +167,7 @@ namespace PM.UsefulThings
 				ActivePanel.IsFocused = false;
 			}
 
-			return GameObject.Instantiate(prefab as MonoBehaviour, parent) as IWindowUT;
+			return (await Addressables.InstantiateAsync(prefab, parent).Task).GetComponent<IWindowUT>();
 		}
 
 		public IWindowUT AddChildToActivePanel(IWindowUT newChild)
@@ -220,11 +222,7 @@ namespace PM.UsefulThings
 
 		private void Window_OnClosed(IWindowUT sender)
 		{
-			bool shouldSetInteractable = false;
-			if (sender == ActivePanel)
-			{
-				shouldSetInteractable = true;
-			}
+			bool shouldSetInteractable = sender == ActivePanel;
 
 			if (panels.Contains(sender))
 			{

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace PM.UsefulThings
 {
@@ -9,11 +10,19 @@ namespace PM.UsefulThings
 	public class WindowsHolderUT : ScriptableObject
 	{
 		[SerializeField]
-		public MonoBehaviour[] Windows;
+		public AssetReference[] Windows;
 
 		public void FindWindows()
 		{
-			Windows = Resources.LoadAll<MonoBehaviour>("UIWindows").Where(x => x is IWindowUT).ToArray();
+			var windows = Resources.LoadAll<MonoBehaviour>("UIWindows").Where(x => x is IWindowUT).ToArray();
+
+			Windows = new AssetReference[windows.Length];
+
+			for (var i = 0; i < windows.Length; i++)
+			{
+				var window = windows[i];
+				Windows[i] = new AssetReference(window.name);
+			}
 		}
 	}
 }
