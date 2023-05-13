@@ -102,9 +102,9 @@ namespace PM.UsefulThings
 		{
 			foreach (var window in WindowsHolder.Windows)
 			{
-				if (window.AssetGUID == typeof(T).Name)
+				if (window.Name == typeof(T).Name)
 				{
-					return await AddNewFrame(window, mode) as T;
+					return await AddNewFrame(window.Reference, mode) as T;
 				}
 			}
 			Debug.LogError("There is no window prefab with class " + typeof(T).ToString());
@@ -128,9 +128,9 @@ namespace PM.UsefulThings
 		{
 			foreach (var window in WindowsHolder.Windows)
 			{
-				if (window.AssetGUID == typeof(T).Name)
+				if (window.Name == typeof(T).Name)
 				{
-					return await OpenNewPanel(window, mode) as T;
+					return await OpenNewPanel(window.Reference, mode) as T;
 				}
 			}
 			Debug.LogError("There is no window prefab with class " + typeof(T).ToString());
