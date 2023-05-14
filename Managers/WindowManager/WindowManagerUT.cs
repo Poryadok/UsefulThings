@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Zenject;
 
 namespace PM.UsefulThings
 {
-	public class WindowManagerUT : PrefabMonoSingleton<WindowManagerUT>
+	public class WindowManagerUT : MonoBehaviour
 	{
 		[SerializeField]
 		protected WindowsHolderUT WindowsHolder;
@@ -14,6 +15,9 @@ namespace PM.UsefulThings
 		[SerializeField]
 		protected Transform AuxiliaryRootPrefab;
 
+		//todo: make a factory
+		[Inject] private DiContainer container;
+		
 		public Canvas RaycastCanvas { get; private set; }
 
 		public Transform MainRoot;
@@ -23,9 +27,9 @@ namespace PM.UsefulThings
 		protected Stack<IWindowUT> frames = new Stack<IWindowUT>();
 		protected List<IWindowUT> allWindows = new List<IWindowUT>();
 
-		protected override void Awake()
+		protected void Awake()
 		{
-			base.Awake();
+			//base.Awake();
 
 			if (MainRoot == null)
 			{
@@ -35,9 +39,9 @@ namespace PM.UsefulThings
 			{
 				AuxiliaryRoot = Instantiate(AuxiliaryRootPrefab);
 			}
-
-			DontDestroyOnLoad(MainRoot);
-			DontDestroyOnLoad(AuxiliaryRoot);
+			//
+			// DontDestroyOnLoad(MainRoot);
+			// DontDestroyOnLoad(AuxiliaryRoot);
 
 			RaycastCanvas = MainRoot.GetComponent<Canvas>();
 
@@ -167,7 +171,10 @@ namespace PM.UsefulThings
 				ActivePanel.IsFocused = false;
 			}
 
-			return (await Addressables.InstantiateAsync(prefab, parent).Task).GetComponent<IWindowUT>();
+			var result = await Addressables.InstantiateAsync(prefab, parent).Task;
+			container.InjectGameObject(result);
+			result.SetActive(true);
+			return result.GetComponent<IWindowUT>();
 		}
 
 		public IWindowUT AddChildToActivePanel(IWindowUT newChild)
