@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace PM.UsefulThings
 {
-	public class WindowManagerUT : PrefabMonoSingleton<WindowManagerUT>
+	public class WindowManagerUT : MonoBehaviour
 	{
-		[SerializeField]
-		protected WindowsHolderUT WindowsHolder;
-		[SerializeField]
-		protected Transform MainRootPrefab;
-		[SerializeField]
-		protected Transform AuxiliaryRootPrefab;
+		[SerializeField] protected WindowsHolderUT WindowsHolder;
+		[SerializeField] protected Transform MainRootPrefab;
+		[SerializeField] protected Transform AuxiliaryRootPrefab;
+
+		//todo: make a factory
+		[Inject] private DiContainer container;
 
 		public Canvas RaycastCanvas { get; private set; }
 
@@ -21,21 +22,22 @@ namespace PM.UsefulThings
 		protected Stack<IWindowUT> frames = new Stack<IWindowUT>();
 		protected List<IWindowUT> allWindows = new List<IWindowUT>();
 
-		protected override void Awake()
+		protected void Awake()
 		{
-			base.Awake();
+			//base.Awake();
 
 			if (MainRoot == null)
 			{
 				MainRoot = Instantiate(MainRootPrefab);
 			}
+
 			if (AuxiliaryRoot == null)
 			{
 				AuxiliaryRoot = Instantiate(AuxiliaryRootPrefab);
 			}
-
-			DontDestroyOnLoad(MainRoot);
-			DontDestroyOnLoad(AuxiliaryRoot);
+			//
+			// DontDestroyOnLoad(MainRoot);
+			// DontDestroyOnLoad(AuxiliaryRoot);
 
 			RaycastCanvas = MainRoot.GetComponent<Canvas>();
 
@@ -58,7 +60,6 @@ namespace PM.UsefulThings
 				}
 			}
 #endif
-
 		}
 
 		public IWindowUT ActivePanel
@@ -77,6 +78,7 @@ namespace PM.UsefulThings
 		}
 
 		protected IWindowUT _panelWithFocus;
+
 		public IWindowUT PanelWithFocus
 		{
 			get
@@ -90,10 +92,7 @@ namespace PM.UsefulThings
 					return null;
 				}
 			}
-			protected set
-			{
-				_panelWithFocus = value;
-			}
+			protected set { _panelWithFocus = value; }
 		}
 
 		public T AddNewFrame<T>(WindowCloseModes mode = WindowCloseModes.CloseNonSolid) where T : MonoBehaviour
@@ -105,6 +104,7 @@ namespace PM.UsefulThings
 					return AddNewFrame(window as IWindowUT, mode) as T;
 				}
 			}
+
 			Debug.LogError("There is no window prefab with class " + typeof(T).ToString());
 			return null;
 		}
@@ -131,6 +131,7 @@ namespace PM.UsefulThings
 					return OpenNewPanel(window as IWindowUT, mode) as T;
 				}
 			}
+
 			Debug.LogError("There is no window prefab with class " + typeof(T).ToString());
 			return null;
 		}
@@ -148,7 +149,8 @@ namespace PM.UsefulThings
 			return newPanel;
 		}
 
-		private IWindowUT CreateWindow(Transform parent, IWindowUT prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid, bool isPanel = true)
+		private IWindowUT CreateWindow(Transform parent, IWindowUT prefab,
+			WindowCloseModes mode = WindowCloseModes.CloseNonSolid, bool isPanel = true)
 		{
 			if (isPanel)
 			{
@@ -165,7 +167,9 @@ namespace PM.UsefulThings
 				ActivePanel.IsFocused = false;
 			}
 
-			return GameObject.Instantiate(prefab as MonoBehaviour, parent) as IWindowUT;
+			var result = container.InstantiatePrefab(prefab as MonoBehaviour);
+			result.SetActive(true);
+			return result.GetComponent<IWindowUT>();
 		}
 
 		public IWindowUT AddChildToActivePanel(IWindowUT newChild)
@@ -238,11 +242,13 @@ namespace PM.UsefulThings
 						temp.Push(panel);
 					}
 				}
+
 				while (temp.Count > 0)
 				{
 					panels.Push(temp.Pop());
 				}
 			}
+
 			if (frames.Contains(sender))
 			{
 				//remove sender from stack even if it's in the middle
@@ -255,6 +261,7 @@ namespace PM.UsefulThings
 						temp.Push(panel);
 					}
 				}
+
 				while (temp.Count > 0)
 				{
 					frames.Push(temp.Pop());
@@ -293,7 +300,7 @@ namespace PM.UsefulThings
 			Listen(child);
 		}
 
-		public void ClosePanel<T>() where T:IWindowUT
+		public void ClosePanel<T>() where T : IWindowUT
 		{
 			var list = new List<IWindowUT>(panels);
 
