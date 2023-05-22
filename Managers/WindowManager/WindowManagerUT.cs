@@ -167,7 +167,7 @@ namespace PM.UsefulThings
 				ActivePanel.IsFocused = false;
 			}
 
-			var result = container.InstantiatePrefab(prefab as MonoBehaviour);
+			var result = container.InstantiatePrefab(prefab as MonoBehaviour, parent);
 			result.SetActive(true);
 			return result.GetComponent<IWindowUT>();
 		}
