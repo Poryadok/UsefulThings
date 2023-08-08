@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace PM.UsefulThings
 {
@@ -39,10 +40,10 @@ namespace PM.UsefulThings
 		{
 			Locale.Clear();
 
-			var localization = Resources.Load<TextAsset>("Localizations/" + CurrentLanguage.ToString());
+			var localization = Addressables.LoadAssetAsync<TextAsset>("Localizations/" + CurrentLanguage).WaitForCompletion();
 			if (localization == null)
 			{
-				localization = Resources.Load<TextAsset>("Localizations/" + DefaultLanguage.ToString());
+				localization = Addressables.LoadAssetAsync<TextAsset>("Localizations/" + DefaultLanguage).WaitForCompletion();
 			}
 
 			if (localization == null)
