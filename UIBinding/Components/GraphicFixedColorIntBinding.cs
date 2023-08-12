@@ -23,8 +23,6 @@ namespace UIBinding.Components
 		[SerializeField]
 		private string m_value = "0";
 		[SerializeField]
-		private bool m_invert = false;
-		[SerializeField]
 		private Color m_colorTrue = Color.white;
 		[SerializeField]
 		private Color m_colorFalse = Color.white;

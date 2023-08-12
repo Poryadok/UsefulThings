@@ -8,75 +8,82 @@ using UnityEngine.AddressableAssets;
 
 namespace PM.UsefulThings
 {
-	//[CreateAssetMenu(fileName = "WindowsHolderUT", menuName = "Holders/WindowsHolderUT", order = 100)]
-	public class WindowsHolderUT : ScriptableObject
-	{
-		[Serializable]
-		public class AssetReferenceWithName
-		{
-			public AssetReference Reference;
-			public string Name;
-		}
-		
-		[SerializeField] public AssetReferenceWithName[] Windows;
+    //[CreateAssetMenu(fileName = "WindowsHolderUT", menuName = "Holders/WindowsHolderUT", order = 100)]
+    public class WindowsHolderUT : ScriptableObject
+    {
+        [Serializable]
+        public class AssetReferenceWithName
+        {
+            public AssetReference Reference;
+            public string Name;
+        }
 
-		public void FindWindows()
-		{
-			var windows = new List<AssetReferenceWithName>();
-			
-			foreach (var fileName in GetFiles("Assets/CurrentProject/Addressables/UIWindows"))
-			{
-				if (fileName.EndsWith("meta"))
-				{
-					continue;
-				}
+        [SerializeField] public AssetReferenceWithName[] Windows;
 
-				windows.Add( new AssetReferenceWithName(){Reference = new AssetReference(AssetDatabase.AssetPathToGUID(fileName)),
-					Name = fileName.Split('\\').Last().Split('.').First()});
-			}
+#if UNITY_EDITOR
 
-			Windows = windows.ToArray();
-			
-			EditorUtility.SetDirty(this);
-		}
+        public void FindWindows()
+        {
+            var windows = new List<AssetReferenceWithName>();
 
-		private static IEnumerable<string> GetFiles(string path)
-		{
-			Queue<string> queue = new Queue<string>();
-			queue.Enqueue(path);
-			while (queue.Count > 0)
-			{
-				path = queue.Dequeue();
-				try
-				{
-					foreach (string subDir in Directory.GetDirectories(path))
-					{
-						queue.Enqueue(subDir);
-					}
-				}
-				catch (Exception ex)
-				{
-					Debug.LogError(ex);
-				}
+            foreach (var fileName in GetFiles("Assets/CurrentProject/Addressables/UIWindows"))
+            {
+                if (fileName.EndsWith("meta"))
+                {
+                    continue;
+                }
 
-				string[] files = null;
-				try
-				{
-					files = Directory.GetFiles(path);
-				}
-				catch (Exception ex)
-				{
-					Debug.LogError(ex);
-				}
+                windows.Add(new AssetReferenceWithName()
+                {
+                    Reference = new AssetReference(AssetDatabase.AssetPathToGUID(fileName)),
+                    Name = fileName.Split('\\').Last().Split('.').First()
+                });
+            }
 
-				if (files != null)
-				{
-					for (int i = 0; i < files.Length; i++)
-					{
-						yield return files[i];
-					}
-				}
-			}
-		}
-	}
+            Windows = windows.ToArray();
+
+            EditorUtility.SetDirty(this);
+        }
+
+        private static IEnumerable<string> GetFiles(string path)
+        {
+            Queue<string> queue = new Queue<string>();
+            queue.Enqueue(path);
+            while (queue.Count > 0)
+            {
+                path = queue.Dequeue();
+                try
+                {
+                    foreach (string subDir in Directory.GetDirectories(path))
+                    {
+                        queue.Enqueue(subDir);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }
+
+                string[] files = null;
+                try
+                {
+                    files = Directory.GetFiles(path);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }
+
+                if (files != null)
+                {
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        yield return files[i];
+                    }
+                }
+            }
+        }
+#endif
+        
+    }
 }
