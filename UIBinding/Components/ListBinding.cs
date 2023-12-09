@@ -2,12 +2,12 @@
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
-
-using UIBinding.Base;
-using UIBinding.Elements;
 using PM.UsefulThings.Extensions;
+using PM.UsefulThings.UIBinding.Base;
+using PM.UsefulThings.UIBinding.Elements;
+using VContainer;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	public class ListBinding : BaseBinding<ListProperty>
 	{
@@ -47,6 +47,14 @@ namespace UIBinding.Components
 		private bool m_scrollHorizontal;
 		private bool m_showAnimationWasPlayed;
 
+		private Func<BaseListElement, Transform, BaseListElement> listElementFactory;
+
+		[Inject]
+		private void Construct(Func<BaseListElement, Transform, BaseListElement> listElementFactory)
+		{
+			this.listElementFactory = listElementFactory;
+		}
+		
 		private void Awake()
 		{
 			m_scrollRect = GetComponent<ScrollRect>();
@@ -184,7 +192,9 @@ namespace UIBinding.Components
 
 		private BaseListElement InstantiateElement(BaseListElementData data, int index = -1)
 		{
-			var element = Instantiate(m_elementPrefab, m_content, false);
+			var resolvedPrefab = m_elementPrefab.Resolve(data);
+			property.forceClear |= m_elementPrefab != resolvedPrefab;
+			var element = listElementFactory(resolvedPrefab, m_content);
 			if (index != -1)
 			{
 				element.transform.SetSiblingIndex(index);
@@ -431,6 +441,9 @@ namespace UIBinding.Components
 
 		private void Subscribe()
 		{
+			if (property == null)
+				return;
+			
 			property.OnElementAdded += ElementAddHandler;
 			property.OnElementInserted += ElementInsertHandler;
 			property.OnElementRemoved += ElementRemoveHandler;
@@ -442,6 +455,9 @@ namespace UIBinding.Components
 
 		private void Unsubscribe()
 		{
+			if (property == null)
+				return;
+
 			property.OnElementAdded -= ElementAddHandler;
 			property.OnElementInserted -= ElementInsertHandler;
 			property.OnElementRemoved -= ElementRemoveHandler;

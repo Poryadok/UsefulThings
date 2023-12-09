@@ -1,8 +1,7 @@
-﻿using UnityEngine;
+﻿using PM.UsefulThings.UIBinding.Base;
+using UnityEngine;
 
-using UIBinding.Base;
-
-namespace UIBinding
+namespace PM.UsefulThings.UIBinding
 {
 	public class Vector2Property : Property<Vector2>
 	{

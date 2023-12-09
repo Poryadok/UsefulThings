@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using PM.UsefulThings.Extensions;
 
-namespace UIBinding.Base
+namespace PM.UsefulThings.UIBinding.Base
 {
 	public abstract class BaseBindingTarget : IBindingTarget
 	{

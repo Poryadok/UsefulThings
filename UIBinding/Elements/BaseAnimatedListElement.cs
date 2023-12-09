@@ -2,7 +2,7 @@
 using System.Collections;
 using PM.UsefulThings.Extensions;
 
-namespace UIBinding.Elements
+namespace PM.UsefulThings.UIBinding.Elements
 {
 	[RequireComponent(typeof(Animator))]
 	public abstract class BaseAnimatedListElement : BaseListElement

@@ -1,7 +1,7 @@
-﻿using UIBinding.Data;
+﻿using PM.UsefulThings.UIBinding.Data;
 
 
-namespace UIBinding.Elements
+namespace PM.UsefulThings.UIBinding.Elements
 {
 	public class MultiClickListElement : BaseListElement
 	{

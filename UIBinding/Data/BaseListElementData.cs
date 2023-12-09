@@ -1,9 +1,8 @@
 ﻿using PM.UsefulThings.Extensions;
 using System;
+using PM.UsefulThings.UIBinding.Base;
 
-using UIBinding.Base;
-
-namespace UIBinding
+namespace PM.UsefulThings.UIBinding
 {
 	public abstract class BaseListElementData : BaseBindingTarget, IComparable<BaseListElementData>
 	{
@@ -11,6 +10,9 @@ namespace UIBinding
 		public event Action<BaseListElementData> OnSelectionChanged;
 
 		public bool Selected { get { return selected.value; } set { SetSelection(value); } }
+		
+		public bool IsSelectionOffable;
+
 		public virtual int Sort { get; set; }
 
 		private BoolProperty selected = new BoolProperty();
@@ -21,7 +23,7 @@ namespace UIBinding
 		{
 			OnClick.Call(this);
 
-			SetSelection(true);
+			SetSelection(IsSelectionOffable ? !selected.value : true);
 		}
 
 		// IComparable

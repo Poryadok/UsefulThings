@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-using UIBinding.Components;
+using PM.UsefulThings.UIBinding.Components;
 
 [CustomEditor(typeof(GraphicFixedColorIntArrayBinding))]
 public class GraphicFixedColorIntBindingEditor : BaseBindingEditor

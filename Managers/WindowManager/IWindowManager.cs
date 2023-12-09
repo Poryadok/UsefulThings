@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace PM.UsefulThings
 {
-	public interface IWindowManagerUT
+	public interface IWindowManager
 	{
 		IWindowUT ActiveFrame { get; }
 		IWindowUT FrameWithFocus { get; }
-		IWindowUT OpenNewFrame(IWindowUT newWindow, WindowCloseModes mode = WindowCloseModes.CloseNonSolid, bool isSolid = false);
+		IWindowUT OpenNewFrame(IWindowUT newWindow, WindowCloseMode mode = WindowCloseMode.CloseNonSolid, bool isSolid = false);
 		IWindowUT AddChildToActiveFrame(IWindowUT newChild);
 	}
 }

@@ -2,8 +2,8 @@
 using UnityEngine.UI;
 using UnityEditor;
 
-using UIBinding.Elements;
-using UIBinding.Components;
+using PM.UsefulThings.UIBinding.Elements;
+using PM.UsefulThings.UIBinding.Components;
 
 [CustomEditor(typeof(ListBinding))]
 public class ListBindingEditor : BaseBindingEditor

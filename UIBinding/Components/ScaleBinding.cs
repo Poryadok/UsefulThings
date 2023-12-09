@@ -1,7 +1,7 @@
-﻿using UIBinding.Base;
+﻿using PM.UsefulThings.UIBinding.Base;
 using UnityEngine;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	public class ScaleBinding : BaseBinding<Vector2Property>
 	{

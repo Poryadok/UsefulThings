@@ -1,6 +1,6 @@
-﻿using UIBinding.Base;
+﻿using PM.UsefulThings.UIBinding.Base;
 
-namespace UIBinding
+namespace PM.UsefulThings.UIBinding
 {
 	public class BoolProperty : Property<bool>
 	{

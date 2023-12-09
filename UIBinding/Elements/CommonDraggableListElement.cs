@@ -1,4 +1,4 @@
-﻿namespace UIBinding.Elements
+﻿namespace PM.UsefulThings.UIBinding.Elements
 {
 	public class CommonDraggableListElement : BaseDraggableListElement { }
 }

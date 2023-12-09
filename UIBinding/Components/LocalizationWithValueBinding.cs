@@ -1,8 +1,8 @@
 ﻿using PM.UsefulThings;
 using PM.UsefulThings.Extensions;
+using PM.UsefulThings.UIBinding.Base;
 using UnityEngine;
 using TMPro;
-using UIBinding.Base;
 using UnityEngine.UI;
 
 namespace UIBinding.Components

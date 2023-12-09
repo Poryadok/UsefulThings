@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using PM.UsefulThings.Extensions;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace PM.UsefulThings
 {
-    //[CreateAssetMenu(fileName = "WindowsHolderUT", menuName = "Holders/WindowsHolderUT", order = 100)]
+    //[CreateAssetMenu(fileName = "WindowsHolder", menuName = "Holders/WindowsHolder", order = 100)]
     public class WindowsHolderUT : ScriptableObject
     {
         [Serializable]
         public class AssetReferenceWithName
         {
-            public AssetReference Reference;
+            public ComponentReference<Component> Reference;
             public string Name;
         }
 
@@ -35,8 +36,8 @@ namespace PM.UsefulThings
 
                 windows.Add(new AssetReferenceWithName()
                 {
-                    Reference = new AssetReference(AssetDatabase.AssetPathToGUID(fileName)),
-                    Name = fileName.Split('\\').Last().Split('.').First()
+                    Reference = new ComponentReference<Component>(AssetDatabase.AssetPathToGUID(fileName)),
+                    Name = Enumerable.First(fileName.Split('\\').Last().Split('.'))
                 });
             }
 

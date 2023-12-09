@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
+using PM.UsefulThings.UIBinding.Base;
 
-using UIBinding.Base;
-
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	[RequireComponent(typeof(Graphic))]
 	public class GraphicFixedColorIntArrayBinding : BaseBinding<IntProperty>

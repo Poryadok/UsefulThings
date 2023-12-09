@@ -3,9 +3,10 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+using PM.UsefulThings.UIBinding;
 using PM.UsefulThings.Extensions;
 
-namespace UIBinding.Base
+namespace PM.UsefulThings.UIBinding.Base
 {
 	public abstract class BaseBindingBehaviourTarget : MonoBehaviour, IBindingTarget
 	{

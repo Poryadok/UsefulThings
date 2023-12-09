@@ -1,7 +1,7 @@
-﻿using UIBinding.Base;
-using System.Collections;
+﻿using System.Collections;
+using PM.UsefulThings.UIBinding.Base;
 
-namespace UIBinding
+namespace PM.UsefulThings.UIBinding
 {
 	public class EnumerableProperty : Property<IEnumerable>
 	{

@@ -1,4 +1,4 @@
-﻿namespace UIBinding
+﻿namespace PM.UsefulThings.UIBinding
 {
 	public abstract class BaseIdentifiedListElementData : BaseListElementData
 	{

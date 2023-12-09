@@ -1,8 +1,7 @@
-﻿using UnityEngine;
+﻿using PM.UsefulThings.UIBinding.Base;
+using UnityEngine;
 
-using UIBinding.Base;
-
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	public class VisibilityBoolBinding : BaseBinding<BoolProperty>
 	{

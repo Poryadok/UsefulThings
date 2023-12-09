@@ -2,7 +2,7 @@
 using System;
 
 
-namespace UIBinding.Data
+namespace PM.UsefulThings.UIBinding.Data
 {
 	public class MultiClickListElementData : BaseListElementData
 	{

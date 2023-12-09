@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UIBinding.Base
+namespace PM.UsefulThings.UIBinding.Base
 {
 	public interface IBindingTarget
 	{

@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-
-using UIBinding.Base;
+using PM.UsefulThings.UIBinding.Base;
 using UnityEngine.UI;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	public class InteractableIntBinding : BaseBinding<IntProperty>
 	{

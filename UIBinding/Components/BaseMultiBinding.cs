@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace UIBinding.Base
+namespace PM.UsefulThings.UIBinding.Base
 {
 	/*public abstract class BaseMultiBinding : MonoBehaviour
 	{

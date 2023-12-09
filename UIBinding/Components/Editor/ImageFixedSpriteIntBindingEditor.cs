@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-using UIBinding.Components;
+using PM.UsefulThings.UIBinding.Components;
 
 [CustomEditor(typeof(ImageFixedSpriteIntBinding))]
 public class ImageFixedSpriteIntBindingEditor : BaseBindingEditor

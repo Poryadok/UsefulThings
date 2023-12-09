@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UIBinding.Base;
+using PM.UsefulThings.UIBinding.Base;
 using UnityEngine;
 using UnityEngine.UI;
 

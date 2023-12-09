@@ -3,8 +3,8 @@ using PM.UsefulThings.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UIBinding;
-using UIBinding.Base;
+using PM.UsefulThings.UIBinding;
+using PM.UsefulThings.UIBinding.Base;
 
 namespace PM.UsefulThings
 {

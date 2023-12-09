@@ -1,7 +1,7 @@
 ﻿using PM.UsefulThings.Extensions;
 using System;
 
-namespace UIBinding
+namespace PM.UsefulThings.UIBinding
 {
 	public class AlphaFadeProperty : FloatProperty
 	{

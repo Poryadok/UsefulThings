@@ -1,7 +1,7 @@
 ﻿using PM.UsefulThings.Extensions;
 using UnityEngine;
 
-namespace UIBinding.Base
+namespace PM.UsefulThings.UIBinding.Base
 {
 	public abstract class BaseBinding : MonoBehaviour
 	{
@@ -96,8 +96,8 @@ namespace UIBinding.Base
 			var parent = transform;
 			while (parent != null)
 			{
-				var component = parent.GetComponent<IBindingTarget>();
-				if (component != null)
+				var components= parent.GetComponents<IBindingTarget>();
+				foreach (var component in components)
 				{
 					var properties = component.GetProperties();
 					var property = FindProperty(properties);

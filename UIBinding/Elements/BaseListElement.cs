@@ -1,11 +1,12 @@
 ﻿using System;
+using PM.UsefulThings.UIBinding.Base;
 
-using UIBinding.Base;
-
-namespace UIBinding.Elements
+namespace PM.UsefulThings.UIBinding.Elements
 {
 	public abstract class BaseListElement : BaseBindingBehaviourTarget, IComparable<BaseListElement>
 	{
+		public bool IsSelectionOffable;
+		
 		public BaseListElementData data { get { return m_data; } }
 
 		private BaseListElementData m_data;
@@ -18,6 +19,7 @@ namespace UIBinding.Elements
 
 			OnInit();
 			ForceUpdateProperties();
+			data.IsSelectionOffable = IsSelectionOffable;
 		}
 
 		protected virtual void OnInit() { }
@@ -26,6 +28,11 @@ namespace UIBinding.Elements
 		public int CompareTo(BaseListElement other)
 		{
 			return m_data.Sort.CompareTo(other.m_data.Sort);
+		}
+
+		public virtual BaseListElement Resolve(BaseListElementData data)
+		{
+			return this;
 		}
 
 		public virtual void ButtonClickHandler()

@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using PM.UsefulThings.Extensions;
 
-namespace UIBinding.Elements
+namespace PM.UsefulThings.UIBinding.Elements
 {
 	public abstract class BaseDraggableListElement : BaseListElement, IPointerDownHandler
 	{

@@ -2,7 +2,7 @@
 using PM.UsefulThings.Extensions;
 using System.Collections;
 using System.Collections.Generic;
-using UIBinding;
+using PM.UsefulThings.UIBinding;
 using UnityEngine;
 using UnityEngine.UI;
 

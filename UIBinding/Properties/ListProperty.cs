@@ -1,10 +1,9 @@
 ﻿using PM.UsefulThings.Extensions;
 using System;
 using System.Collections.Generic;
+using PM.UsefulThings.UIBinding.Base;
 
-using UIBinding.Base;
-
-namespace UIBinding
+namespace PM.UsefulThings.UIBinding
 {
 	public class ListProperty : Property<IEnumerable<BaseListElementData>>
 	{
@@ -21,9 +20,11 @@ namespace UIBinding
 		public BaseListElementData this[int index] { get { return GetByIndex(index); } set { SetByIndex(index, value); } }
 		public int count { get { return m_elementsData.Count; } }
 		public bool multiSelection { get; set; }
-
+		public bool forceClear { get; set; }
+		
 		private List<BaseListElementData> m_elementsData = new List<BaseListElementData>();
 
+		
 		#region Add
 		public void Add(BaseListElementData data)
 		{
@@ -414,7 +415,7 @@ namespace UIBinding
 		protected override void SetValue(IEnumerable<BaseListElementData> value)
 		{
 			var newElementsData = new List<BaseListElementData>(value);
-			if ((m_elementsData.Count == 0) || (newElementsData.Count == 0))
+			if (forceClear || (m_elementsData.Count == 0) || (newElementsData.Count == 0))
 			{
 				ClearElements();
 				m_elementsData = newElementsData;

@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using UIBinding.Base;
+﻿using PM.UsefulThings.UIBinding.Base;
+using UnityEngine;
 using TMPro;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	[RequireComponent(typeof(TMP_Dropdown))]
 	public class DropdownBinding : BaseBinding<IntProperty>

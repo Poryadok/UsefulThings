@@ -1,7 +1,7 @@
-﻿using UIBinding.Base;
+﻿using PM.UsefulThings.UIBinding.Base;
 using UnityEngine;
 
-namespace UIBinding
+namespace PM.UsefulThings.UIBinding
 {
 	public class ColorProperty : Property<Color>
 	{

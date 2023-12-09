@@ -4,7 +4,7 @@ using UnityEngine;
 namespace PM.UsefulThings.Editor
 {
 	[CustomEditor(typeof(WindowsHolderUT))]
-	public class WindowsHolderUTEditor : UnityEditor.Editor
+	public class WindowsHolderEditor : UnityEditor.Editor
 	{
 		public override void OnInspectorGUI()
 		{

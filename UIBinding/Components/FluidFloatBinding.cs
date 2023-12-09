@@ -1,9 +1,8 @@
-﻿using UnityEngine;
+﻿using PM.UsefulThings.UIBinding.Base;
+using UnityEngine;
 using UnityEngine.UI;
 
-using UIBinding.Base;
-
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	[RequireComponent(typeof(Text))]
 	public class FluidFloatBinding : BaseBinding<FloatProperty>

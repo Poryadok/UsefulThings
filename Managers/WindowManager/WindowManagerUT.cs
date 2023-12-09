@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using PM.UsefulThings.Extensions;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using VContainer;
 
 namespace PM.UsefulThings
 {
-	public class WindowManagerUT : PrefabMonoSingleton<WindowManagerUT>
+	public class WindowManagerUT : MonoBehaviour
 	{
 		[SerializeField]
 		protected WindowsHolderUT WindowsHolder;
@@ -23,10 +26,16 @@ namespace PM.UsefulThings
 		protected Stack<IWindowUT> frames = new Stack<IWindowUT>();
 		protected List<IWindowUT> allWindows = new List<IWindowUT>();
 
-		protected override void Awake()
-		{
-			base.Awake();
+		private Func<ComponentReference<Component>, Transform, IWindowUT> windowFactory;
 
+		[Inject]
+		private void Construct(Func<ComponentReference<Component>, Transform, IWindowUT> windowFactory)
+		{
+			this.windowFactory = windowFactory;
+		}
+		
+		protected void Awake()
+		{
 			if (MainRoot == null)
 			{
 				MainRoot = Instantiate(MainRootPrefab);
@@ -35,9 +44,6 @@ namespace PM.UsefulThings
 			{
 				AuxiliaryRoot = Instantiate(AuxiliaryRootPrefab);
 			}
-
-			DontDestroyOnLoad(MainRoot);
-			DontDestroyOnLoad(AuxiliaryRoot);
 
 			RaycastCanvas = MainRoot.GetComponent<Canvas>();
 
@@ -98,7 +104,7 @@ namespace PM.UsefulThings
 			}
 		}
 
-		public T AddNewFrame<T>(WindowCloseModes mode = WindowCloseModes.CloseNonSolid) where T : MonoBehaviour, IWindowUT
+		public T AddNewFrame<T>(WindowCloseMode mode = WindowCloseMode.CloseNonSolid) where T : MonoBehaviour, IWindowUT
 		{
 			foreach (var window in WindowsHolder.Windows)
 			{
@@ -111,7 +117,7 @@ namespace PM.UsefulThings
 			return null;
 		}
 
-		public IWindowUT AddNewFrame(AssetReference prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid)
+		public IWindowUT AddNewFrame(ComponentReference<Component> prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid)
 		{
 			var newFrame = CreateWindow(AuxiliaryRoot, prefab, mode);
 
@@ -124,7 +130,7 @@ namespace PM.UsefulThings
 			return newFrame;
 		}
 
-		public T OpenNewPanel<T>(WindowCloseModes mode = WindowCloseModes.CloseNonSolid) where T : MonoBehaviour, IWindowUT
+		public T OpenNewPanel<T>(WindowCloseMode mode = WindowCloseMode.CloseNonSolid) where T : MonoBehaviour, IWindowUT
 		{
 			foreach (var window in WindowsHolder.Windows)
 			{
@@ -137,7 +143,20 @@ namespace PM.UsefulThings
 			return null;
 		}
 
-		public IWindowUT OpenNewPanel(AssetReference prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid)
+		public ComponentReference<Component> GetPrefabRef<T>() where T : MonoBehaviour, IWindowUT
+		{
+			foreach (var window in WindowsHolder.Windows)
+			{
+				if (window.Name == typeof(T).Name)
+				{
+					return window.Reference;
+				}
+			}
+			Debug.LogError("There is no window prefab with class " + typeof(T).ToString());
+			return null;
+		}
+
+		public IWindowUT OpenNewPanel(ComponentReference<Component> prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid)
 		{
 			var newPanel = CreateWindow(MainRoot, prefab, mode);
 			
@@ -150,7 +169,7 @@ namespace PM.UsefulThings
 			return newPanel;
 		}
 
-		public async Task<T> OpenNewPanelAsync<T>(WindowCloseModes mode = WindowCloseModes.CloseNonSolid) where T : MonoBehaviour, IWindowUT
+		public async Task<T> OpenNewPanelAsync<T>(WindowCloseMode mode = WindowCloseMode.CloseNonSolid) where T : MonoBehaviour, IWindowUT
 		{
 			foreach (var window in WindowsHolder.Windows)
 			{
@@ -163,7 +182,7 @@ namespace PM.UsefulThings
 			return null;
 		}
 
-		public async Task<IWindowUT> OpenNewPanelAsync(AssetReference prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid)
+		public async Task<IWindowUT> OpenNewPanelAsync(ComponentReference<Component> prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid)
 		{
 			var newPanel = await CreateWindowAsync(MainRoot, prefab, mode);
 			
@@ -176,7 +195,7 @@ namespace PM.UsefulThings
 			return newPanel;
 		}
 
-		private IWindowUT CreateWindow(Transform parent, AssetReference prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid, bool isPanel = true)
+		public IWindowUT CreateWindow(Transform parent, ComponentReference<Component> prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid, bool isPanel = true)
 		{
 			if (isPanel)
 			{
@@ -193,11 +212,11 @@ namespace PM.UsefulThings
 				ActivePanel.IsFocused = false;
 			}
 
-			var result = Addressables.InstantiateAsync(prefab, parent).WaitForCompletion();
-			return result.GetComponent<IWindowUT>();
+			var result = windowFactory.Invoke(prefab, parent);
+			return result;
 		}
 
-		private async Task<IWindowUT> CreateWindowAsync(Transform parent, AssetReference prefab, WindowCloseModes mode = WindowCloseModes.CloseNonSolid, bool isPanel = true)
+		private async Task<IWindowUT> CreateWindowAsync(Transform parent, ComponentReference<Component> prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid, bool isPanel = true)
 		{
 			if (isPanel)
 			{
@@ -214,7 +233,9 @@ namespace PM.UsefulThings
 				ActivePanel.IsFocused = false;
 			}
 
-			return (await Addressables.InstantiateAsync(prefab, parent).Task).GetComponent<IWindowUT>();
+			//todo: it's not async
+			var result = windowFactory.Invoke(prefab, parent);
+			return result;
 		}
 
 		public IWindowUT AddChildToActivePanel(IWindowUT newChild)
@@ -352,30 +373,30 @@ namespace PM.UsefulThings
 			}
 		}
 
-		public void CloseFrames(WindowCloseModes closeMode = WindowCloseModes.CloseEverything)
+		public void CloseFrames(WindowCloseMode closeMode = WindowCloseMode.CloseEverything)
 		{
 			CloseWindows(frames, closeMode);
 		}
 
-		public void ClosePanels(WindowCloseModes closeMode = WindowCloseModes.CloseEverything)
+		public void ClosePanels(WindowCloseMode closeMode = WindowCloseMode.CloseEverything)
 		{
 			CloseWindows(panels, closeMode);
 		}
 
-		public void CloseWindows(Stack<IWindowUT> stack, WindowCloseModes closeMode)
+		public void CloseWindows(Stack<IWindowUT> stack, WindowCloseMode closeMode)
 		{
 			switch (closeMode)
 			{
-				case WindowCloseModes.CloseNothing:
+				case WindowCloseMode.CloseNothing:
 					break;
-				case WindowCloseModes.CloseNonSolid:
+				case WindowCloseMode.CloseNonSolid:
 					while (ActivePanel != null && !ActivePanel.IsSolid)
 					{
 						stack.Pop().Close();
 					}
 
 					break;
-				case WindowCloseModes.CloseEverything:
+				case WindowCloseMode.CloseEverything:
 					while (stack.Count > 0)
 					{
 						stack.Pop().Close();

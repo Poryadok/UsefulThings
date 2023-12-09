@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-
-using UIBinding.Base;
 using PM.UsefulThings.Extensions;
+using PM.UsefulThings.UIBinding.Base;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	[RequireComponent(typeof(Text))]
 	public class TextFullColorBinding : BaseBinding<ColorProperty>

@@ -1,19 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-
-using UIBinding.Base;
 using PM.UsefulThings.Extensions;
+using PM.UsefulThings.UIBinding.Base;
+using TMPro;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
-	[RequireComponent(typeof(Text))]
+	[RequireComponent(typeof(TMP_Text))]
 	public class TextColorBinding : BaseBinding<ColorProperty>
 	{
-		private Text m_text;
+		private TMP_Text m_text;
 
 		private void Awake()
 		{
-			m_text = GetComponent<Text>();
+			m_text = GetComponent<TMP_Text>();
 		}
 
 		protected override void OnUpdateValue()

@@ -1,9 +1,8 @@
-﻿using UnityEngine;
-
-using UIBinding.Base;
+﻿using PM.UsefulThings.UIBinding.Base;
+using UnityEngine;
 using UnityEngine.UI;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	public class InteractableBoolBinding : BaseBinding<BoolProperty>
 	{

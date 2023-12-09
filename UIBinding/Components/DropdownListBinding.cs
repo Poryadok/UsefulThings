@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
-using UIBinding.Base;
 using System.Collections.Generic;
+using PM.UsefulThings.UIBinding.Base;
 using TMPro;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	[RequireComponent(typeof(TMP_Dropdown))]
 	public class DropdownListBinding : BaseBinding<EnumerableProperty>

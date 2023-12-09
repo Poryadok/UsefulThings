@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+﻿using PM.UsefulThings.UIBinding.Base;
+using UnityEngine;
 using UnityEngine.UI;
-using UIBinding.Base;
 using TMPro;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	public class TextBinding : BaseBinding<Property>
 	{

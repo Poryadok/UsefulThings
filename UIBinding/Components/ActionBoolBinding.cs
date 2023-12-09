@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using PM.UsefulThings.UIBinding.Base;
+using UnityEngine;
 using UnityEngine.Events;
-using UIBinding.Base;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	public class ActionBoolBinding : BaseBinding<BoolProperty>
 	{

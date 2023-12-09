@@ -1,7 +1,7 @@
-﻿using UIBinding.Base;
-using CodeStage.AntiCheat.ObscuredTypes;
+﻿using CodeStage.AntiCheat.ObscuredTypes;
+using PM.UsefulThings.UIBinding.Base;
 
-namespace UIBinding
+namespace PM.UsefulThings.UIBinding
 {
 	public class ObscuredIntProperty : Property<ObscuredInt>
 	{

@@ -1,8 +1,8 @@
-﻿using UIBinding.Base;
-using System.Collections;
+﻿using System.Collections;
+using PM.UsefulThings.UIBinding.Base;
 using UnityEngine;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	public class TransformBinding : BaseBinding<TransformProperty>
 	{

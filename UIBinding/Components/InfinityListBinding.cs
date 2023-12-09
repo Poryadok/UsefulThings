@@ -2,12 +2,11 @@
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
-
-using UIBinding.Base;
-using UIBinding.Elements;
 using PM.UsefulThings.Extensions;
+using PM.UsefulThings.UIBinding.Base;
+using PM.UsefulThings.UIBinding.Elements;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	public class InfinityListBinding : BaseBinding<ListProperty>
 	{

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UIBinding
+namespace PM.UsefulThings.UIBinding
 {
 	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public class IgnoreBinding : Attribute

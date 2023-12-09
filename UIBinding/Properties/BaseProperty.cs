@@ -1,7 +1,7 @@
 ﻿using PM.UsefulThings.Extensions;
 using System;
 
-namespace UIBinding.Base
+namespace PM.UsefulThings.UIBinding.Base
 {
 	public abstract class BaseProperty
 	{

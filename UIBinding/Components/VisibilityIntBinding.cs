@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using PM.UsefulThings.UIBinding.Base;
 
-using UIBinding.Base;
-
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	public class VisibilityIntBinding : BaseBinding<IntProperty>
 	{

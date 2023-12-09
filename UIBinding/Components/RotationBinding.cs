@@ -1,6 +1,6 @@
-﻿using UIBinding.Base;
+﻿using PM.UsefulThings.UIBinding.Base;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	public class RotationBinding : BaseBinding<QuaternionProperty>
 	{

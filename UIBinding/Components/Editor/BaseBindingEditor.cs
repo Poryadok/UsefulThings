@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-using UIBinding.Base;
+using PM.UsefulThings.UIBinding.Base;
 
 [CustomEditor(typeof(BaseBinding))]
 public class BaseBindingEditor : Editor

@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-
-using UIBinding.Base;
 using PM.UsefulThings.Extensions;
+using PM.UsefulThings.UIBinding.Base;
 
-namespace UIBinding.Components
+namespace PM.UsefulThings.UIBinding.Components
 {
 	public class AlphaFadeBinding : BaseBinding<AlphaFadeProperty>
 	{
