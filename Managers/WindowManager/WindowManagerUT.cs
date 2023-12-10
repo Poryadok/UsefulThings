@@ -408,9 +408,17 @@ namespace PM.UsefulThings
 			}
 		}
 
-		public T GetWindow<T>() where T : class, IWindowUT
+		public T GetWindow<T>() where T : MonoBehaviour, IWindowUT
 		{
 			return allWindows.Find(x => x is T) as T;
+		}
+
+		public T GetOrOpenWindow<T>() where T : MonoBehaviour, IWindowUT
+		{
+			var result = allWindows.Find(x => x is T) as T;
+			if (result == null)
+				return OpenNewPanel<T>();
+			return result;
 		}
 	}
 }
