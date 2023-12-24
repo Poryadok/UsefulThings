@@ -507,6 +507,10 @@ namespace PM.UsefulThings.UIBinding
 			var data = m_elementsData[index];
 			data.OnSelectionChanged -= SelectionChangeHandler;
 			data.OnClick -= ClickHandler;
+			if (data is IDisposable disposableElData)
+			{
+				disposableElData.Dispose();
+			}
 			m_elementsData.RemoveAt(index);
 
 			OnElementRemoved.Call(index);
@@ -519,6 +523,10 @@ namespace PM.UsefulThings.UIBinding
 				var elementData = m_elementsData[i];
 				elementData.OnSelectionChanged -= SelectionChangeHandler;
 				elementData.OnClick -= ClickHandler;
+				if (elementData is IDisposable disposableElData)
+				{
+					disposableElData.Dispose();
+				}
 			}
 			m_elementsData.Clear();
 		}
@@ -534,6 +542,10 @@ namespace PM.UsefulThings.UIBinding
 			m_elementsData[index] = data;
 			oldData.OnSelectionChanged -= SelectionChangeHandler;
 			oldData.OnClick -= ClickHandler;
+			if (oldData is IDisposable disposableElData)
+			{
+				disposableElData.Dispose();
+			}
 			data.OnSelectionChanged += SelectionChangeHandler;
 			data.OnClick += ClickHandler;
 

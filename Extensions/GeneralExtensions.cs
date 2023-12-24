@@ -502,5 +502,21 @@ namespace PM.UsefulThings.Extensions
 			rotated_point.y = vector.x * Mathf.Sin(angle) + vector.y * Mathf.Cos(angle);
 			return rotated_point;
 		}
+		
+		public static List<Type> GetAllDerivedTypes(this Type type)
+		{
+			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+			var listTypes = new List<Type>();
+			foreach (var item in assemblies)
+			{
+				listTypes.AddRange(item
+					.GetTypes()
+					.FindAll(t => t != type && type.IsAssignableFrom(t))
+					.ToList());
+			}
+
+			return listTypes;
+		}
+
 	}
 }
