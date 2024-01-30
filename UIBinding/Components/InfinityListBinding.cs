@@ -34,7 +34,8 @@ namespace PM.UsefulThings.UIBinding.Components
 		private bool m_scrollHorizontal;
 		private float m_itemSize;
 		private int m_lastScrollIndex;
-
+		private float m_containerSize;
+		
 		protected void Awake()
 		{
 			m_scrollRect = GetComponent<ScrollRect>();
@@ -135,14 +136,20 @@ namespace PM.UsefulThings.UIBinding.Components
 
 		private void RebuildList()
 		{
+			if (m_viewport == null)
+				return;
+
+			
 			var count = 0;
 			if (m_scrollType == ScrollType.Vertical)
 			{
-				count = Mathf.Min(property.count, Mathf.RoundToInt(m_viewport.GetHeight() / m_itemSize) + 2);
+				m_containerSize = m_content.GetHeight();
+				count = Mathf.Min(property.count, Mathf.RoundToInt(m_containerSize / m_itemSize) + 2);
 			}
 			else
 			{
-				count = Mathf.Min(property.count, Mathf.RoundToInt(m_viewport.GetWidth() / m_itemSize) + 2);
+				m_containerSize = m_content.GetWidth();
+				count = Mathf.Min(property.count, Mathf.RoundToInt(m_containerSize / m_itemSize) + 2);
 			}
 
 			if (m_pool.Count > count)
