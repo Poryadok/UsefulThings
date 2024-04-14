@@ -47,10 +47,10 @@ namespace PM.UsefulThings.UIBinding.Components
 		private bool m_scrollHorizontal;
 		private bool m_showAnimationWasPlayed;
 
-		private Func<BaseListElement, Transform, BaseListElement> listElementFactory;
+		private ListElementFactory listElementFactory;
 
 		[Inject]
-		private void Construct(Func<BaseListElement, Transform, BaseListElement> listElementFactory)
+		private void Construct(ListElementFactory listElementFactory)
 		{
 			this.listElementFactory = listElementFactory;
 		}
@@ -194,7 +194,7 @@ namespace PM.UsefulThings.UIBinding.Components
 		{
 			var resolvedPrefab = m_elementPrefab.Resolve(data);
 			property.forceClear |= m_elementPrefab != resolvedPrefab;
-			var element = listElementFactory(resolvedPrefab, m_content);
+			var element = listElementFactory.Create(resolvedPrefab, m_content);
 			if (index != -1)
 			{
 				element.transform.SetSiblingIndex(index);

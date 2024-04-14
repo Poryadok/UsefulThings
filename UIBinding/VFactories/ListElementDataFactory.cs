@@ -6,7 +6,7 @@ using VContainer;
 
 namespace PM.UsefulThings.UIBinding
 {
-    public class LEDFactory
+    public class ListElementDataFactory
     {
         [Inject] private IObjectResolver container;
         

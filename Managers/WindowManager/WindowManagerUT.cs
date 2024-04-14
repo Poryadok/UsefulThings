@@ -26,10 +26,10 @@ namespace PM.UsefulThings
 		protected Stack<IWindowUT> frames = new Stack<IWindowUT>();
 		protected List<IWindowUT> allWindows = new List<IWindowUT>();
 
-		private Func<ComponentReference<Component>, Transform, IWindowUT> windowFactory;
+		private WindowUTFactory windowFactory;
 
 		[Inject]
-		private void Construct(Func<ComponentReference<Component>, Transform, IWindowUT> windowFactory)
+		private void Construct(WindowUTFactory windowFactory)
 		{
 			this.windowFactory = windowFactory;
 		}
@@ -108,16 +108,16 @@ namespace PM.UsefulThings
 		{
 			foreach (var window in WindowsHolder.Windows)
 			{
-				if (window.Name == typeof(T).Name)
+				if (window.GetType() == typeof(T))
 				{
-					return AddNewFrame(window.Reference, mode) as T;
+					return AddNewFrame(window, mode) as T;
 				}
 			}
 			Debug.LogError("There is no window prefab with class " + typeof(T).ToString());
 			return null;
 		}
 
-		public IWindowUT AddNewFrame(ComponentReference<Component> prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid)
+		public IWindowUT AddNewFrame(IWindowUT prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid)
 		{
 			var newFrame = CreateWindow(AuxiliaryRoot, prefab, mode);
 
@@ -134,29 +134,29 @@ namespace PM.UsefulThings
 		{
 			foreach (var window in WindowsHolder.Windows)
 			{
-				if (window.Name == typeof(T).Name)
+				if (window.GetType() == typeof(T))
 				{
-					return OpenNewPanel(window.Reference, mode) as T;
+					return OpenNewPanel(window, mode) as T;
 				}
 			}
 			Debug.LogError("There is no window prefab with class " + typeof(T).ToString());
 			return null;
 		}
 
-		public ComponentReference<Component> GetPrefabRef<T>() where T : MonoBehaviour, IWindowUT
+		public IWindowUT GetPrefabRef<T>() where T : MonoBehaviour, IWindowUT
 		{
 			foreach (var window in WindowsHolder.Windows)
 			{
-				if (window.Name == typeof(T).Name)
+				if (window.GetType() == typeof(T))
 				{
-					return window.Reference;
+					return window;
 				}
 			}
 			Debug.LogError("There is no window prefab with class " + typeof(T).ToString());
 			return null;
 		}
 
-		public IWindowUT OpenNewPanel(ComponentReference<Component> prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid)
+		public IWindowUT OpenNewPanel(IWindowUT prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid)
 		{
 			var newPanel = CreateWindow(MainRoot, prefab, mode);
 			
@@ -173,16 +173,16 @@ namespace PM.UsefulThings
 		{
 			foreach (var window in WindowsHolder.Windows)
 			{
-				if (window.Name == typeof(T).Name)
+				if (window.GetType() == typeof(T))
 				{
-					return await OpenNewPanelAsync(window.Reference, mode) as T;
+					return await OpenNewPanelAsync(window, mode) as T;
 				}
 			}
 			Debug.LogError("There is no window prefab with class " + typeof(T).ToString());
 			return null;
 		}
 
-		public async Task<IWindowUT> OpenNewPanelAsync(ComponentReference<Component> prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid)
+		public async Task<IWindowUT> OpenNewPanelAsync(IWindowUT prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid)
 		{
 			var newPanel = await CreateWindowAsync(MainRoot, prefab, mode);
 			
@@ -195,7 +195,7 @@ namespace PM.UsefulThings
 			return newPanel;
 		}
 
-		public IWindowUT CreateWindow(Transform parent, ComponentReference<Component> prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid, bool isPanel = true)
+		public IWindowUT CreateWindow(Transform parent, IWindowUT prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid, bool isPanel = true)
 		{
 			if (isPanel)
 			{
@@ -212,11 +212,11 @@ namespace PM.UsefulThings
 				ActivePanel.IsFocused = false;
 			}
 
-			var result = windowFactory.Invoke(prefab, parent);
+			var result = windowFactory.Create(prefab, parent);
 			return result;
 		}
 
-		private async Task<IWindowUT> CreateWindowAsync(Transform parent, ComponentReference<Component> prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid, bool isPanel = true)
+		private async Task<IWindowUT> CreateWindowAsync(Transform parent, IWindowUT prefab, WindowCloseMode mode = WindowCloseMode.CloseNonSolid, bool isPanel = true)
 		{
 			if (isPanel)
 			{
@@ -234,7 +234,7 @@ namespace PM.UsefulThings
 			}
 
 			//todo: it's not async
-			var result = windowFactory.Invoke(prefab, parent);
+			var result = windowFactory.Create(prefab, parent);
 			return result;
 		}
 
