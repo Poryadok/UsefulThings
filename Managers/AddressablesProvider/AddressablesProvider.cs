@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using PM.UsefulThings.Memory;
 using UnityEngine;
@@ -65,6 +66,7 @@ namespace PM.UsefulThings
 			resourceHandles.Add(handle);
 		}
 
+#if !UNITY_WEBGL		
 		public T Load<T>(string assetKey) where T : class
 		{
 			if (!(typeof(T).IsAssignableFrom(typeof(Component))) 
@@ -89,6 +91,7 @@ namespace PM.UsefulThings
 			var result = handle.WaitForCompletion();
 			return result;
 		}
+#endif
 
 
 		public async UniTask<GameObject> InstantiateAsync(AssetReference assetRef, Transform parent = null)
@@ -104,26 +107,30 @@ namespace PM.UsefulThings
 			var result = gameObject.GetComponent<T>();
 			return result;
 		}
-		
+
+#if !UNITY_WEBGL		
 		public T Instantiate<T>(ComponentReference<T> assetRef, Transform parent = null) where T : Component
 		{
 			var handle = Addressables.InstantiateAsync(assetRef, parent).WaitForCompletion();
 			var result = handle.GetComponent<T>();
 			return result;
 		}
+#endif
 
-		public async UniTask<GameObject> InstantiateAsync(AssetReferenceGameObject assetRef, Transform parent = null)
+		public async UniTask<GameObject> InstantiateAsync(AssetReferenceGameObject assetRef, Transform parent = null, CancellationToken token = default)
 		{
-			var result = await Addressables.InstantiateAsync(assetRef);
+			var result = await Addressables.InstantiateAsync(assetRef).WithCancellation(token);
 			return result;
 		}
 
+#if !UNITY_WEBGL
 		public GameObject Instantiate(AssetReferenceGameObject assetRef, Transform parent = null)
 		{
 			var result = Addressables.InstantiateAsync(assetRef, parent).WaitForCompletion();
 			return result;
 		}
-
+#endif
+		
 		public bool Release(Object obj)
 		{
 			var isInHandles = false;
