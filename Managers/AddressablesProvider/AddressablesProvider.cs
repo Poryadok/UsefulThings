@@ -117,9 +117,10 @@ namespace PM.UsefulThings
 		}
 #endif
 
-		public async UniTask<GameObject> InstantiateAsync(AssetReferenceGameObject assetRef, Transform parent = null, CancellationToken token = default)
+		public async UniTask<GameObject> InstantiateAsync(AssetReferenceGameObject assetRef, Transform parent = null)
 		{
-			var result = await Addressables.InstantiateAsync(assetRef).WithCancellation(token);
+			var result = await Addressables.InstantiateAsync(assetRef);
+			result.transform.SetParent(parent);
 			return result;
 		}
 
