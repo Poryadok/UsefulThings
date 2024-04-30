@@ -1,0 +1,17 @@
+{
+  "name": "com.pm.usefulthings",
+  "displayName": "UsefulThings",
+  "author": {
+    "name": "me"
+  },
+  "version": "1.0.0",
+  "unity": "2018.4",
+  "description": "Provides some useful things.",
+  "keywords": [
+    "useful",
+    "things"
+  ],
+  "license": "MIT",
+  "category": "Task",
+  "dependencies": {}
+}
