@@ -3,7 +3,7 @@ using UnityEditor;
 
 using UIBinding.Components;
 
-[CustomEditor(typeof(GraphicFixedColorIntArrayBinding))]
+[CustomEditor(typeof(GraphicFixedColorIntBinding))]
 public class GraphicFixedColorIntBindingEditor : BaseBindingEditor
 {
 	private SerializedProperty m_enumType;
